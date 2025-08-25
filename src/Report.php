@@ -3,38 +3,38 @@ namespace fmihel\report;
 
 require_once __DIR__ . '/ReportFonts.php';
 
-const RE_PAGE   = 'page';
-const RE_LINE   = 'line';
-const RE_BOX    = 'box';
-const RE_TEXT   = 'text';
-const RE_CROSS  = 'cross';
-const RE_MARKUP = 'markup';
-
 class Report
 {
+    const RE_PAGE   = 'page';
+    const RE_LINE   = 'line';
+    const RE_BOX    = 'box';
+    const RE_TEXT   = 'text';
+    const RE_CROSS  = 'cross';
+    const RE_MARKUP = 'markup';
+
     public $pages         = [];
     private $_currentPage = -1;
 
     public $default = [
         'page'    => [],
         'objects' => [
-            RE_LINE   => [
+            self::RE_LINE   => [
                 'color' => '#000000',
                 'width' => 1,
             ],
-            RE_BOX    => [
+            self::RE_BOX    => [
                 'color' => '#000000',
                 'bg'    => '',
                 'width' => 1,
             ],
 
-            RE_TEXT   => [
+            self::RE_TEXT   => [
                 'color'    => '#000000',
                 'fontSize' => 12,
                 'fontName' => '',
             ],
-            RE_CROSS  => [],
-            RE_MARKUP => [],
+            self::RE_CROSS  => [],
+            self::RE_MARKUP => [],
         ],
     ];
 
@@ -58,17 +58,17 @@ class Report
                     $name = $item['name'];
                     $data = $item['data'];
 
-                    if ($name === RE_LINE) {
-                        $driver->line($data['x1'], $data['y1'], $data['x2'], $data['y2'], array_merge($default['objects'][RE_LINE], $data['param']));
-                    } elseif ($name === RE_BOX) {
-                        $driver->box($data['x'], $data['y'], $data['dx'], $data['dy'], array_merge($default['objects'][RE_BOX], $data['param']));
+                    if ($name === self::RE_LINE) {
+                        $driver->line($data['x1'], $data['y1'], $data['x2'], $data['y2'], array_merge($default['objects'][self::RE_LINE], $data['param']));
+                    } elseif ($name === self::RE_BOX) {
+                        $driver->box($data['x'], $data['y'], $data['dx'], $data['dy'], array_merge($default['objects'][self::RE_BOX], $data['param']));
 
-                    } elseif ($name === RE_TEXT) {
-                        $driver->text($data['x'], $data['y'], $data['text'], array_merge($default['objects'][RE_TEXT], $data['param']));
-                    } elseif ($name === RE_CROSS) {
-                        $driver->cross($data['x'], $data['y'], array_merge($default['objects'][RE_CROSS], $data['param']));
-                    } elseif ($name === RE_MARKUP) {
-                        $driver->markup(array_merge($default['objects'][RE_MARKUP], $data['param']));
+                    } elseif ($name === self::RE_TEXT) {
+                        $driver->text($data['x'], $data['y'], $data['text'], array_merge($default['objects'][self::RE_TEXT], $data['param']));
+                    } elseif ($name === self::RE_CROSS) {
+                        $driver->cross($data['x'], $data['y'], array_merge($default['objects'][self::RE_CROSS], $data['param']));
+                    } elseif ($name === self::RE_MARKUP) {
+                        $driver->markup(array_merge($default['objects'][self::RE_MARKUP], $data['param']));
                     }
 
                 }
@@ -98,26 +98,26 @@ class Report
 
     public function line($x1, $y1, $x2, $y2, array $param = [])
     {
-        $this->addObject(['name' => RE_LINE, 'data' => ['x1' => $x1, 'y1' => $y1, 'x2' => $x2, 'y2' => $y2, 'param' => $param]]);
+        $this->addObject(['name' => self::RE_LINE, 'data' => ['x1' => $x1, 'y1' => $y1, 'x2' => $x2, 'y2' => $y2, 'param' => $param]]);
     }
     public function box($x, $y, $dx, $dy, array $param = [])
     {
-        $this->addObject(['name' => RE_BOX, 'data' => ['x' => $x, 'y' => $y, 'dx' => $dx, 'dy' => $dy, 'param' => $param]]);
+        $this->addObject(['name' => self::RE_BOX, 'data' => ['x' => $x, 'y' => $y, 'dx' => $dx, 'dy' => $dy, 'param' => $param]]);
     }
 
     public function cross($x, $y, array $param = [])
     {
-        $this->addObject(['name' => RE_CROSS, 'data' => ['x' => $x, 'y' => $y, 'param' => $param]]);
+        $this->addObject(['name' => self::RE_CROSS, 'data' => ['x' => $x, 'y' => $y, 'param' => $param]]);
     }
 
     public function text($x, $y, $text, array $param = [])
     {
-        $this->addObject(['name' => RE_TEXT, 'data' => ['x' => $x, 'y' => $y, 'text' => $text, 'param' => $param]]);
+        $this->addObject(['name' => self::RE_TEXT, 'data' => ['x' => $x, 'y' => $y, 'text' => $text, 'param' => $param]]);
 
     }
     public function markup($param = [])
     {
-        $this->addObject(['name' => RE_MARKUP, 'data' => ['param' => $param]]);
+        $this->addObject(['name' => self::RE_MARKUP, 'data' => ['param' => $param]]);
     }
 
 }

@@ -6,11 +6,12 @@ require_once __DIR__ . '/../ReportFonts.php';
 
 use function fmihel\report\routines\translate;
 
-const LANDSCAPE = 'landscape';
-const PORTRAIT  = 'portrait';
-
 class ReportDriver
 {
+    const A4_RATIO  = 1.414;
+    const LANDSCAPE = 'landscape';
+    const PORTRAIT  = 'portrait';
+
     private $realArea = [
         'xmax' => 100,
         'ymax' => 100,

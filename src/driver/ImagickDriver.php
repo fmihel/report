@@ -7,12 +7,10 @@ require_once __DIR__ . '/ReportDriver.php';
 require_once __DIR__ . '/../routines/translate.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
-const A4_RATIO = 1.414;
-
 class ImagickDriver extends ReportDriver
 {
     private $default = [
-        PORTRAIT  => [
+        ReportDriver::PORTRAIT  => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -28,7 +26,7 @@ class ImagickDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
             ],
         ],
-        LANDSCAPE => [
+        ReportDriver::LANDSCAPE => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -57,7 +55,7 @@ class ImagickDriver extends ReportDriver
 
     public function newPage(array $param = [])
     {
-        $orientation = isset($param['orientation']) ? $param['orientation'] : PORTRAIT;
+        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportDriver::PORTRAIT;
 
         $param = array_merge_recursive(
             $this->default[$orientation],

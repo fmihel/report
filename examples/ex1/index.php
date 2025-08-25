@@ -3,17 +3,17 @@
 // ini_set("error_log", "/var/tmp/php-error.log");
 // ini_set('display_errors', 0);
 
-use const fmihel\report\driver\LANDSCAPE;
-use const fmihel\report\driver\PORTRAIT;
 use fmihel\console;
 use fmihel\report\driver\ImagickDriver;
 use fmihel\report\driver\PdfDriver;
+use fmihel\report\driver\ReportDriver;
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 require_once __DIR__ . '/../../src/Report.php';
+require_once __DIR__ . '/../../src/driver/ReportDriver.php';
 require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
 require_once __DIR__ . '/../../src/driver/PdfDriver.php';
 
@@ -23,7 +23,7 @@ console::log('start', (isset($_REQUEST['pdf']) ? 'pdf' : 'jpg'));
 try {
     $report = new Report();
 
-    $report->newPage(['orientation' => PORTRAIT]);
+    $report->newPage(['orientation' => ReportDriver::PORTRAIT]);
     $report->markup();
     // $report->line(10, 10, 100, 100, ['color' => '#000000', 'width' => 1]);
     // $report->line(10, 50, 100, 140, ['color' => '#000000', 'width' => 3]);
@@ -40,7 +40,7 @@ try {
 
     // $report->text(10, 10, 'text1');
 
-    $report->newPage(['orientation' => LANDSCAPE]);
+    $report->newPage(['orientation' => ReportDriver::LANDSCAPE]);
     $report->markup();
     $report->cross(100, 100);
 

@@ -13,12 +13,13 @@ use function fmihel\report\routines\hexToRgbw;
 use TCPDF;
 
 // use TCPDF_FONTS;
-const PATH_TCPDF_FONTS_DEFAULT = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
 
 class PdfDriver extends ReportDriver
 {
+    const PATH_TCPDF_FONTS_DEFAULT = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
+
     private $default = [
-        PORTRAIT  => [
+        ReportDriver::PORTRAIT  => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -32,7 +33,7 @@ class PdfDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
             ],
         ],
-        LANDSCAPE => [
+        ReportDriver::LANDSCAPE => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -52,7 +53,7 @@ class PdfDriver extends ReportDriver
     private $params      = [];
     private $currentPage = -1;
 
-    public static $PATH_TCPDF_FONTS = PATH_TCPDF_FONTS_DEFAULT;
+    public static $PATH_TCPDF_FONTS = self::PATH_TCPDF_FONTS_DEFAULT;
 
     public function __construct()
     {
@@ -73,7 +74,7 @@ class PdfDriver extends ReportDriver
     }
     public function newPage(array $param = [])
     {
-        $orientation = isset($param['orientation']) ? $param['orientation'] : PORTRAIT;
+        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportDriver::PORTRAIT;
         $param       = array_merge_recursive(
             $this->default[$orientation],
             $param
@@ -82,7 +83,7 @@ class PdfDriver extends ReportDriver
         $this->setRealArea($param['realArea']);
         $this->setVirtualArea($param['virtualArea']);
 
-        $this->pdf->AddPage($orientation === LANDSCAPE ? 'L' : 'P');
+        $this->pdf->AddPage($orientation === ReportDriver::LANDSCAPE ? 'L' : 'P');
         $this->currentPage = count($this->params) - 1;
 
     }

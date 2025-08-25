@@ -2,15 +2,11 @@
 namespace fmihel\report\driver;
 
 require_once __DIR__ . '/../routines/translate.php';
-require_once __DIR__ . '/../ReportFonts.php';
 
 use function fmihel\report\routines\translate;
 
 class ReportDriver
 {
-    const A4_RATIO  = 1.414;
-    const LANDSCAPE = 'landscape';
-    const PORTRAIT  = 'portrait';
 
     private $realArea = [
         'xmax' => 100,
@@ -114,10 +110,14 @@ class ReportDriver
 
     }
 
+    public function textSize($text, $alias, $fontSize)
+    {
+        throw new \Exception('не реализован метод ' . __METHOD__);
+    }
+
     public static function addFont(string $alias, string $fontFileName, array $param = [])
     {
-
         throw new \Exception('не реализован метод ' . __METHOD__);
-
     }
+
 }

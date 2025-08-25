@@ -1,8 +1,10 @@
 <?php
 namespace fmihel\report\driver;
 
+use fmihel\report\ReportConsts;
 use fmihel\report\ReportFonts;
 
+require_once __DIR__ . '/../ReportConsts.php';
 require_once __DIR__ . '/ReportDriver.php';
 require_once __DIR__ . '/../routines/translate.php';
 require_once __DIR__ . '/../ReportFonts.php';
@@ -10,14 +12,15 @@ require_once __DIR__ . '/../ReportFonts.php';
 class ImagickDriver extends ReportDriver
 {
     private $default = [
-        ReportDriver::PORTRAIT  => [
+        ReportConsts::PORTRAIT  => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
                 'xmax' => 1024,
                 'ymax' => 1448, //1024 * A4_RATIO,
-                                //  'xmax' => 2000,
-                                //  'ymax' => 2000*A4_RATIO, //1024 * A4_RATIO,
+
+                // 'xmax' => 500,
+                // 'ymax' => 500 * ReportConsts::A4_RATIO, //1024 * A4_RATIO,
             ],
             'virtualArea' => [
                 'xmin' => 0,
@@ -26,7 +29,7 @@ class ImagickDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
             ],
         ],
-        ReportDriver::LANDSCAPE => [
+        ReportConsts::LANDSCAPE => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -55,7 +58,7 @@ class ImagickDriver extends ReportDriver
 
     public function newPage(array $param = [])
     {
-        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportDriver::PORTRAIT;
+        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportConsts::PORTRAIT;
 
         $param = array_merge_recursive(
             $this->default[$orientation],
@@ -229,7 +232,7 @@ class ImagickDriver extends ReportDriver
             return $value * (min($r['xmax'], $r['ymax']) / 1024);
         }
         if ($name === 'fontSize') {
-            return $value * 2;
+            return $value * 3 * (min($r['xmax'], $r['ymax']) / 1024);
         }
         parent::metrik($name, $value);
 

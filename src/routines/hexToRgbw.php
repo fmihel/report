@@ -19,4 +19,5 @@ function hexToRgbw(string $hexColor): array
         return hexToRgb($hexColor);
 
     }
+    return [0, 0, 0];
 }

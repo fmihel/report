@@ -1,12 +1,14 @@
 <?php
 namespace fmihel\report\driver;
 
-require_once __DIR__ . '/ReportDriver.php';
+require_once __DIR__ . '/../ReportConsts.php';
 require_once __DIR__ . '/../routines/hexToRgb.php';
 require_once __DIR__ . '/../routines/hexToRgba.php';
 require_once __DIR__ . '/../routines/hexToRgbw.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
+use fmihel\console;
+use fmihel\report\ReportConsts;
 use fmihel\report\ReportFonts;
 use function fmihel\report\routines\hexToRgb;
 use function fmihel\report\routines\hexToRgbw;
@@ -19,7 +21,7 @@ class PdfDriver extends ReportDriver
     const PATH_TCPDF_FONTS_DEFAULT = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
 
     private $default = [
-        ReportDriver::PORTRAIT  => [
+        ReportConsts::PORTRAIT  => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -33,7 +35,7 @@ class PdfDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
             ],
         ],
-        ReportDriver::LANDSCAPE => [
+        ReportConsts::LANDSCAPE => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -74,7 +76,7 @@ class PdfDriver extends ReportDriver
     }
     public function newPage(array $param = [])
     {
-        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportDriver::PORTRAIT;
+        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportConsts::PORTRAIT;
         $param       = array_merge_recursive(
             $this->default[$orientation],
             $param
@@ -83,7 +85,7 @@ class PdfDriver extends ReportDriver
         $this->setRealArea($param['realArea']);
         $this->setVirtualArea($param['virtualArea']);
 
-        $this->pdf->AddPage($orientation === ReportDriver::LANDSCAPE ? 'L' : 'P');
+        $this->pdf->AddPage($orientation === ReportConsts::LANDSCAPE ? 'L' : 'P');
         $this->currentPage = count($this->params) - 1;
 
     }
@@ -129,6 +131,10 @@ class PdfDriver extends ReportDriver
         }
         $this->pdf->SetFontSize($this->metrik('fontSize', $param['fontSize']));
         $this->pdf->SetTextColorArray(hexToRgb($param['color']));
+
+        $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+        console::log($size);
+
         $this->pdf->Text($this->x($x), $this->y($y), $text);
 
     }
@@ -213,6 +219,22 @@ class PdfDriver extends ReportDriver
             return $value * 2;
         }
         parent::metrik($name, $value);
+    }
+
+    public function textSize($text, $alias, $fontSize)
+    {
+
+        $p = $this->getCurrentParam();
+        $r = $p['realArea'];
+        $k = min($r['xmax'], $r['ymax']) / 211;
+
+        $m = ReportFonts::metrik($text, $alias);
+
+        return [
+            'w' => $fontSize * $m['w'] * $k,
+            'h' => $fontSize * $m['h'] * $k,
+        ];
+
     }
 
     public static function addFont(string $alias, string $fontFileName, array $param = [])

@@ -6,12 +6,13 @@
 use fmihel\console;
 use fmihel\report\driver\ImagickDriver;
 use fmihel\report\driver\PdfDriver;
-use fmihel\report\driver\ReportDriver;
 use fmihel\report\Report;
+use fmihel\report\ReportConsts;
 use fmihel\report\ReportFonts;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+require_once __DIR__ . '/../../src/ReportConsts.php';
 require_once __DIR__ . '/../../src/Report.php';
 require_once __DIR__ . '/../../src/driver/ReportDriver.php';
 require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
@@ -23,24 +24,29 @@ console::log('start', (isset($_REQUEST['pdf']) ? 'pdf' : 'jpg'));
 try {
     $report = new Report();
 
-    $report->newPage(['orientation' => ReportDriver::PORTRAIT]);
+    $report->newPage(['orientation' => ReportConsts::PORTRAIT]);
     $report->markup();
     // $report->line(10, 10, 100, 100, ['color' => '#000000', 'width' => 1]);
     // $report->line(10, 50, 100, 140, ['color' => '#000000', 'width' => 3]);
     // $report->line(10, 100, 100, 190, ['color' => '#000000', 'width' => 6]);
     $report->box(200, 200, 400, 50, ['color' => '#ff0000', 'bg' => '#00ff0099']);
-    $report->box(200, 300, 400, 50, ['color' => '#ff0000', 'bg' => '#00ffff33']);
-    $report->box(300, 250, 400, 50, ['color' => '#ff0000', 'bg' => '#00ffff33']);
+    $report->text(200, 200, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 5]);
 
-    $report->cross(200 + 400, 200);
-    $report->cross(200 + 400, 200);
-    $report->text(200, 200, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10]);
-    $report->cross(200, 200);
+    $report->box(300, 250, 400, 50, ['color' => '#ff0000', 'bg' => '']);
+    $report->text(300, 250, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10]);
+
+    $report->box(200, 300, 400, 50, ['color' => '#ff0000', 'bg' => '#00ffff33']);
+    $report->text(200, 300, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 15]);
+
+    // $report->cross(200 + 400, 200);
+    // $report->cross(200 + 400, 200);
+
+    // $report->cross(200, 200);
     // $report->text(300, 300, 'comic русский', ['color','fontName'=>'comic']);
 
     // $report->text(10, 10, 'text1');
 
-    $report->newPage(['orientation' => ReportDriver::LANDSCAPE]);
+    $report->newPage(['orientation' => ReportConsts::LANDSCAPE]);
     $report->markup();
     $report->cross(100, 100);
 

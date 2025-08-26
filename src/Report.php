@@ -11,6 +11,7 @@ class Report
     const RE_TEXT         = 'text';
     const RE_TEXT_IN_RECT = 'textInRect';
     const RE_CROSS        = 'cross';
+    const RE_IMAGE        = 'image';
     const RE_MARKUP       = 'markup';
 
     public $pages         = [];
@@ -32,7 +33,7 @@ class Report
             self::RE_TEXT         => [
                 'color'      => '#000000',
                 'fontSize'   => 12,
-                'fontName'   => '',
+                'fontName'   => 'roboto',
                 'alignVert'  => 'bottom',
                 'alignHoriz' => 'left',
                 // 'colorFrame' => '',
@@ -40,9 +41,10 @@ class Report
             self::RE_TEXT_IN_RECT => [
                 'color'      => '#000000',
                 'fontSize'   => 12,
-                'fontName'   => '',
+                'fontName'   => 'roboto',
                 'alignHoriz' => 'left',
-                'rowHeight'  => 1,
+            ],
+            self::RE_IMAGE        => [
 
             ],
             self::RE_CROSS        => [],
@@ -74,7 +76,6 @@ class Report
                         $driver->line($data['x1'], $data['y1'], $data['x2'], $data['y2'], array_merge($default['objects'][self::RE_LINE], $data['param']));
                     } elseif ($name === self::RE_BOX) {
                         $driver->box($data['x'], $data['y'], $data['dx'], $data['dy'], array_merge($default['objects'][self::RE_BOX], $data['param']));
-
                     } elseif ($name === self::RE_TEXT) {
                         $driver->text($data['x'], $data['y'], $data['text'], array_merge($default['objects'][self::RE_TEXT], $data['param']));
                     } elseif ($name === self::RE_TEXT_IN_RECT) {
@@ -83,8 +84,9 @@ class Report
                         $driver->cross($data['x'], $data['y'], array_merge($default['objects'][self::RE_CROSS], $data['param']));
                     } elseif ($name === self::RE_MARKUP) {
                         $driver->markup(array_merge($default['objects'][self::RE_MARKUP], $data['param']));
+                    } elseif ($name === self::RE_IMAGE) {
+                        $driver->image($data['x'], $data['y'], $data['w'], $data['filename'], array_merge($default['objects'][self::RE_IMAGE], $data['param']));
                     }
-
                 }
             }
 
@@ -132,6 +134,10 @@ class Report
     public function textInRect($x, $y, $w, $h, string $text, array $param = [])
     {
         $this->addObject(['name' => self::RE_TEXT_IN_RECT, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'h' => $h, 'text' => $text, 'param' => $param]]);
+    }
+    public function image($x, $y, $w, string $filename, array $param = [])
+    {
+        $this->addObject(['name' => self::RE_IMAGE, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'filename' => $filename, 'param' => $param]]);
     }
 
     public function markup($param = [])

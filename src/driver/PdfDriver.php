@@ -5,12 +5,15 @@ require_once __DIR__ . '/../ReportConsts.php';
 require_once __DIR__ . '/../routines/hexToRgb.php';
 require_once __DIR__ . '/../routines/hexToRgba.php';
 require_once __DIR__ . '/../routines/hexToRgbw.php';
+require_once __DIR__ . '/../routines/imgSize.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
 use fmihel\report\ReportConsts;
 use fmihel\report\ReportFonts;
 use function fmihel\report\routines\hexToRgb;
 use function fmihel\report\routines\hexToRgbw;
+use function fmihel\report\routines\imgSize;
+use function fmihel\report\routines\translate;
 use TCPDF;
 
 // use TCPDF_FONTS;
@@ -225,7 +228,26 @@ class PdfDriver extends ReportDriver
             throw new \Exception('не указано имa шрифта fontName');
         }
     }
+    public function image($x, $y, $w, string $filename, array $param = [])
+    {
+        if ($stream = @fopen($filename, 'r')) {
 
+            $data = stream_get_contents($stream, -1);
+            fclose($stream);
+
+            $size = imgSize($data);
+            // $uri  = 'data://application/octet-stream;base64,' . base64_encode($image_as_stream);
+            // $size = getimagesize($uri);
+
+            $scale  = $size[1] / $size[0];
+            $width  = $this->delta(translate($size[0], 0, $size[0], 0, $w));
+            $height = $this->delta(translate($size[1], 0, $size[1], 0, $w * $scale));
+
+            $this->pdf->Image($filename, $this->x($x), $this->y($y), $width, $height);
+
+        }
+
+    }
     protected function textSize($text, $alias, $fontSize)
     {
 

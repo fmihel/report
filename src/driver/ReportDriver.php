@@ -55,14 +55,19 @@ class ReportDriver
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
 
-    public function fontName(string $name, $param = [])
+    public function image($x, $y, $w, string $filename, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-    public function fontSize(string $name, $param = [])
-    {
-        throw new \Exception('не реализован метод ' . __METHOD__);
-    }
+
+    // public function fontName(string $name, $param = [])
+    // {
+    //     throw new \Exception('не реализован метод ' . __METHOD__);
+    // }
+    // public function fontSize(string $name, $param = [])
+    // {
+    //     throw new \Exception('не реализован метод ' . __METHOD__);
+    // }
 
     public function markup($param = [])
     {

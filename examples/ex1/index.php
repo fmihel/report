@@ -18,6 +18,8 @@ require_once __DIR__ . '/../../src/driver/ReportDriver.php';
 require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
 require_once __DIR__ . '/../../src/driver/PdfDriver.php';
 
+const FONT_PATH = __DIR__ . '/../fonts';
+
 console::line();
 console::log((isset($_REQUEST['pdf']) ? 'pdf' : 'jpg') . ' start');
 
@@ -33,8 +35,9 @@ try {
     $vert  = 'bottom';
     $horiz = 'right';
     $report->textInRect(200, 200, 400, 100, "Как говорила в июле 1805 года известная Анна Павловна Шерер, фрейлина и приближенная императрицы Марии Феодоровны, встречая важного и чиновного князя Василия, первого приехавшего на ее вечер. Анна Павловна кашляла несколько дней, у нее был грипп, как она говорила (грипп был тогда новое слово, употреблявшееся только редкими). В записочках, разосланных утром с красным лакеем, было написано без различия во всех:«Si vous n'avez rien de mieux à faire, Monsieur le comte (или mon prince), et si la perspective de passer la soirée chez une pauvre malade ne vous effraye pas trop, je serai charmée de vous voir chez moi entre 7 et 10 heures. Annette Scherer»",
-        ['fontName' => 'roboto', 'fontSize' => 10, 'alignHoriz' => 'left']);
+        ['fontSize' => 5, 'alignHoriz' => 'left']);
 
+    $report->image(100, 100, 200, 'D:\tmp\image.jpg');
     // $report->text(400, 250, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
 
     // $report->text(400, 300, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 15, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
@@ -58,19 +61,11 @@ try {
 
     // $report->out(ImagickDriver::create(), '');
 
-    $FONT_PATH = __DIR__ . '/../../fonts';
-    ReportFonts::add('roboto', $FONT_PATH . '/roboto/roboto.ttf', [
+    ReportFonts::add('comic', FONT_PATH . '/comics/comics.ttf', [
         'files' => [
-            $FONT_PATH . '/roboto/roboto.ctg.z',
-            $FONT_PATH . '/roboto/roboto.php',
-            $FONT_PATH . '/roboto/roboto.z',
-        ],
-    ]);
-    ReportFonts::add('comic', $FONT_PATH . '/comics/comics.ttf', [
-        'files' => [
-            $FONT_PATH . '/comics/comics.ctg.z',
-            $FONT_PATH . '/comics/comics.php',
-            $FONT_PATH . '/comics/comics.z',
+            FONT_PATH . '/comics/comics.ctg.z',
+            FONT_PATH . '/comics/comics.php',
+            FONT_PATH . '/comics/comics.z',
         ],
     ]);
 

@@ -3,10 +3,15 @@ namespace fmihel\report\driver;
 
 use fmihel\report\ReportConsts;
 use fmihel\report\ReportFonts;
+use function fmihel\report\routines\imgSize;
+use function fmihel\report\routines\randomString;
+use function fmihel\report\routines\translate;
 
 require_once __DIR__ . '/../ReportConsts.php';
 require_once __DIR__ . '/ReportDriver.php';
 require_once __DIR__ . '/../routines/translate.php';
+require_once __DIR__ . '/../routines/imgSize.php';
+require_once __DIR__ . '/../routines/randomString.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
 class ImagickDriver extends ReportDriver
@@ -211,7 +216,30 @@ class ImagickDriver extends ReportDriver
             throw new \Exception('не указано имa шрифта fontName');
         }
     }
+    public function image($x, $y, $w, string $filename, array $param = [])
+    {
 
+        $tmp = __DIR__ . '/tmp_' . randomString(5) . '.jpg';
+
+        $data = @file_get_contents($filename);
+        @file_put_contents($tmp, $data);
+        $size = imgSize($data);
+
+        $img = new \Imagick();
+        $img->readImage($tmp);
+
+        $scale  = $size[1] / $size[0];
+        $width  = $this->delta(translate($size[0], 0, $size[0], 0, $w));
+        $height = $this->delta(translate($size[1], 0, $size[1], 0, $w * $scale));
+
+        $draw = $this->getCurrentDraw();
+        $draw->composite(\Imagick::COMPOSITE_DEFAULT, $this->x($x), $this->y($y), $width, $height, $img);
+
+        if (file_exists($tmp)) {
+            unlink($tmp);
+        }
+
+    }
     protected function textSize($text, $alias, $fontSize)
     {
 

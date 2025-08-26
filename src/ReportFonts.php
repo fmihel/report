@@ -61,4 +61,13 @@ class ReportFonts
 
 }
 
+const FONT_PATH = __DIR__ . '/../fonts';
+ReportFonts::add('roboto', FONT_PATH . '/roboto/roboto.ttf', [
+    'files' => [
+        FONT_PATH . '/roboto/roboto.ctg.z',
+        FONT_PATH . '/roboto/roboto.php',
+        FONT_PATH . '/roboto/roboto.z',
+    ],
+]);
+
 ReportFonts::addMap('roboto', new RobotoMap());

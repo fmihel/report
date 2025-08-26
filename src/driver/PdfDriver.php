@@ -131,29 +131,34 @@ class PdfDriver extends ReportDriver
 
         if ($param['fontName']) {
             $this->pdf->SetFont(ReportFonts::get($param['fontName'])['name']);
+            $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
             if ($param['alignVert']) {
                 if ($param['alignVert'] === 'top') {
-                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
                     $offY = -$size['h'];
                 } elseif ($param['alignVert'] === 'center') {
-                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
                     $offY = -$size['h'] / 2;
                 }
             }
-
-            if ($param['colorFrame']) {
-                $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
-                $ax   = 0;
-                $ay   = 0;
-                if ($param['alignVert'] === 'top') {
-                    $ay = -$size['h'];
-                } elseif ($param['alignVert'] === 'center') {
-                    $ay = -$size['h'] / 2;
+            if ($param['alignHoriz']) {
+                if ($param['alignHoriz'] === 'right') {
+                    $offX = -$size['w'];
+                } elseif ($param['alignHoriz'] === 'center') {
+                    $offX = -$size['w'] / 2;
                 }
-                $this->pdf->SetDrawColorArray(hexToRgb($param['colorFrame']));
-                $this->pdf->Rect($this->x($x) + $ax, $this->y($y) + $ay, $size['w'], $size['h'], 'D', [], []);
             }
+            // $param['colorFrame'] = '#000000';
+            // if ($param['colorFrame']) {
+            //     $ax = 0;
+            //     $ay = 0;
+            //     if ($param['alignVert'] === 'top') {
+            //         $ay = -$size['h'];
+            //     } elseif ($param['alignVert'] === 'center') {
+            //         $ay = -$size['h'] / 2;
+            //     }
+            //     $this->pdf->SetDrawColorArray(hexToRgb($param['colorFrame']));
+            //     $this->pdf->Rect($this->x($x) + $ax, $this->y($y) + $ay, $size['w'], $size['h'], 'D', [], []);
+            // }
 
         }
 
@@ -166,6 +171,61 @@ class PdfDriver extends ReportDriver
 
     }
 
+    public function textInRect($x, $y, $w, $h, string $text, array $param = [])
+    {
+        if ($param['fontName']) {
+            $this->pdf->SetFont(ReportFonts::get($param['fontName'])['name']);
+
+            $strings   = [];
+            $rw        = $this->delta($w);
+            $lastw     = 0;
+            $rowHeight = 0;
+
+            $texts = mb_str_split($text);
+            foreach ($texts as $char) {
+
+                if (empty($strings)) {
+                    $strings[] = '';
+                    $lastw     = 0;
+                }
+                if ($char !== "\n") {
+                    if ($lastw > 0 || $char !== ' ') {
+                        $charSize = $this->textSize($char, $param['fontName'], $param['fontSize']);
+                        if ($rowHeight === 0) {
+                            $rowHeight = $this->transform('h', $charSize['h'], 'virtual');
+                        }
+                        if ($lastw + $charSize['w'] <= $rw) {
+                            $strings[count($strings) - 1] .= $char;
+                            $lastw += $charSize['w'];
+                        } else {
+                            $strings[] = ($char !== ' ' ? $char : '');
+                            $lastw     = ($char === ' ' ? 0 : $charSize['w']);
+                        }
+                    }
+                } else {
+                    $strings[] = '';
+                    $lastw     = 0;
+                }
+            }
+
+            $offX = 0;
+            if ($param['alignHoriz'] === 'right') {
+                $offX = $w;
+            } elseif ($param['alignHoriz'] === 'center') {
+                $offX = $w / 2;
+            }
+
+            $param['alignVert'] = 'bottom';
+            $pos                = $y;
+            foreach ($strings as $string) {
+                $this->text($x + $offX, $pos, trim($string), $param);
+                $pos += $rowHeight;
+            }
+        } else {
+            throw new \Exception('не указано имa шрифта fontName');
+        }
+    }
+
     protected function textSize($text, $alias, $fontSize)
     {
 
@@ -176,7 +236,7 @@ class PdfDriver extends ReportDriver
         $m = ReportFonts::metrik($text, $alias);
 
         return [
-            'w' => $fontSize * $m['w'] * $k / 32.5,
+            'w' => $fontSize * $m['w'] * $k / 22,
             'h' => $fontSize * $m['h'] * $k * 0.7,
         ];
 

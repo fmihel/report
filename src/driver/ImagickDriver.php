@@ -112,34 +112,38 @@ class ImagickDriver extends ReportDriver
 
         if ($param['fontName']) {
             $draw->setFont(ReportFonts::get($param['fontName'])['fontFileName']);
+            $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
             if ($param['alignVert']) {
                 if ($param['alignVert'] === 'bottom') {
-                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
                     $offY = $size['h'];
                 } elseif ($param['alignVert'] === 'center') {
-                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
                     $offY = $size['h'] / 2;
                 }
             }
 
-            if ($param['colorFrame']) {
-                $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
-                $draw->setStrokeWidth($this->metrik('width', 1));
-                $draw->setStrokeColor($param['colorFrame']);
-                $draw->setFillColor('#00000000');
-
-                $ax = 0;
-                $ay = 0;
-                if ($param['alignVert'] === 'top') {
-                    $ay = -$size['h'];
-                } elseif ($param['alignVert'] === 'center') {
-                    $ay = -$size['h'] / 2;
+            if ($param['alignHoriz']) {
+                if ($param['alignHoriz'] === 'right') {
+                    $offX = -$size['w'];
+                } elseif ($param['alignHoriz'] === 'center') {
+                    $offX = -$size['w'] / 2;
                 }
-
-                $draw->rectangle($this->x($x) + $ax, $this->y($y) + $ay, $this->x($x) + $size['w'] + $ax, $this->y($y) + $size['h'] + $ay);
-
             }
+            // $param['colorFrame'] = '#000000';
+            // if ($param['colorFrame']) {
+            //     $draw->setStrokeWidth($this->metrik('width', 1));
+            //     $draw->setStrokeColor($param['colorFrame']);
+            //     $draw->setFillColor('#00000000');
+
+            //     $ax = 0;
+            //     $ay = 0;
+            //     if ($param['alignVert'] === 'top') {
+            //         $ay = -$size['h'];
+            //     } elseif ($param['alignVert'] === 'center') {
+            //         $ay = -$size['h'] / 2;
+            //     }
+            //     $draw->rectangle($this->x($x) + $ax, $this->y($y) + $ay, $this->x($x) + $size['w'] + $ax, $this->y($y) + $size['h'] + $ay);
+            // }
 
         }
 
@@ -151,6 +155,63 @@ class ImagickDriver extends ReportDriver
         $draw->annotation($this->x($x) + $offX, $this->y($y) + $offY, $text);
 
     }
+
+    public function textInRect($x, $y, $w, $h, string $text, array $param = [])
+    {
+        if ($param['fontName']) {
+            $draw = $this->getCurrentDraw();
+            $draw->setFont(ReportFonts::get($param['fontName'])['fontFileName']);
+
+            $strings   = [];
+            $rw        = $this->delta($w);
+            $lastw     = 0;
+            $rowHeight = 0;
+
+            $texts = mb_str_split($text);
+            foreach ($texts as $char) {
+
+                if (empty($strings)) {
+                    $strings[] = '';
+                    $lastw     = 0;
+                }
+                if ($char !== "\n") {
+                    if ($lastw > 0 || $char !== ' ') {
+                        $charSize = $this->textSize($char, $param['fontName'], $param['fontSize']);
+                        if ($rowHeight === 0) {
+                            $rowHeight = $this->transform('h', $charSize['h'], 'virtual');
+                        }
+                        if ($lastw + $charSize['w'] <= $rw) {
+                            $strings[count($strings) - 1] .= $char;
+                            $lastw += $charSize['w'];
+                        } else {
+                            $strings[] = ($char !== ' ' ? $char : '');
+                            $lastw     = ($char === ' ' ? 0 : $charSize['w']);
+                        }
+                    }
+                } else {
+                    $strings[] = '';
+                    $lastw     = 0;
+                }
+            }
+
+            $offX = 0;
+            if ($param['alignHoriz'] === 'right') {
+                $offX = $w;
+            } elseif ($param['alignHoriz'] === 'center') {
+                $offX = $w / 2;
+            }
+            $param['alignVert'] = 'bottom';
+
+            $pos = $y;
+            foreach ($strings as $string) {
+                $this->text($x + $offX, $pos, trim($string), $param);
+                $pos += $rowHeight;
+            }
+        } else {
+            throw new \Exception('не указано имa шрифта fontName');
+        }
+    }
+
     protected function textSize($text, $alias, $fontSize)
     {
 
@@ -161,9 +222,8 @@ class ImagickDriver extends ReportDriver
         $m = ReportFonts::metrik($text, $alias);
 
         return [
-            'w' => $fontSize * $m['w'] * $k / 7.1,
-            'h' => $fontSize * $m['h'] * $k * 3.2,
-
+            'w' => $fontSize * $m['w'] * $k / 4.65,
+            'h' => $fontSize * $m['h'] * $k * 3.385,
         ];
 
     }
@@ -281,7 +341,7 @@ class ImagickDriver extends ReportDriver
             return $value * (min($r['xmax'], $r['ymax']) / 1024);
         }
         if ($name === 'fontSize') {
-            return $value * 3.4 * (min($r['xmax'], $r['ymax']) / 1024);
+            return $value * 3.6 * (min($r['xmax'], $r['ymax']) / 1024);
         }
         parent::metrik($name, $value);
 

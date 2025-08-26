@@ -30,15 +30,15 @@ try {
     // $report->line(10, 50, 100, 140, ['color' => '#000000', 'width' => 3]);
     // $report->line(10, 100, 100, 190, ['color' => '#000000', 'width' => 6]);
     $report->box(200, 200, 400, 50, ['color' => '#ff0000', 'bg' => '#00ff0099']);
-    $align = 'center';
-    $report->text(200, 200, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 5, 'alignVert' => $align]);
+    $vert  = 'bottom';
+    $horiz = 'center';
+    $report->textInRect(200, 200, 200, 100, "emglish съешь еще этих\n французски\n булок no english!",
+        ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => 'bottom', 'alignHoriz' => 'left']);
 
-    $report->box(300, 250, 400, 50, ['color' => '#ff0000', 'bg' => '']);
-    $report->text(300, 250, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => $align]);
+    // $report->text(400, 250, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
 
-    $report->box(200, 300, 400, 50, ['color' => '#ff0000', 'bg' => '#00ffff33']);
-    $report->text(200, 300, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 15, 'alignVert' => $align]);
-
+    // $report->text(400, 300, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 15, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
+    // $report->line(400, 100, 400, 400, ['width' => 2]);
     // $report->cross(200 + 400, 200);
     // $report->cross(200 + 400, 200);
 

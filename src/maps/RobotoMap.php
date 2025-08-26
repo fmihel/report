@@ -152,9 +152,8 @@ class RobotoMap implements IReportMap
     public function width(string $text)
     {
         $result = 0;
-        $len    = strlen($text);
-        for ($i = 0; $i < $len; $i++) {
-            $char = $text[$i];
+        $texts  = mb_str_split($text);
+        foreach ($texts as $char) {
             $result += isset(ROBOTO_MAP[$char]) ? ROBOTO_MAP[$char] : ROBOTO_MAP['common'];
         }
         return $result;

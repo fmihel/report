@@ -5,12 +5,13 @@ require_once __DIR__ . '/ReportFonts.php';
 
 class Report
 {
-    const RE_PAGE   = 'page';
-    const RE_LINE   = 'line';
-    const RE_BOX    = 'box';
-    const RE_TEXT   = 'text';
-    const RE_CROSS  = 'cross';
-    const RE_MARKUP = 'markup';
+    const RE_PAGE         = 'page';
+    const RE_LINE         = 'line';
+    const RE_BOX          = 'box';
+    const RE_TEXT         = 'text';
+    const RE_TEXT_IN_RECT = 'textInRect';
+    const RE_CROSS        = 'cross';
+    const RE_MARKUP       = 'markup';
 
     public $pages         = [];
     private $_currentPage = -1;
@@ -18,25 +19,34 @@ class Report
     public $default = [
         'page'    => [],
         'objects' => [
-            self::RE_LINE   => [
+            self::RE_LINE         => [
                 'color' => '#000000',
                 'width' => 1,
             ],
-            self::RE_BOX    => [
+            self::RE_BOX          => [
                 'color' => '#000000',
                 'bg'    => '',
                 'width' => 1,
             ],
 
-            self::RE_TEXT   => [
+            self::RE_TEXT         => [
                 'color'      => '#000000',
                 'fontSize'   => 12,
                 'fontName'   => '',
                 'alignVert'  => 'bottom',
-                'colorFrame' => '',
+                'alignHoriz' => 'left',
+                // 'colorFrame' => '',
             ],
-            self::RE_CROSS  => [],
-            self::RE_MARKUP => [],
+            self::RE_TEXT_IN_RECT => [
+                'color'      => '#000000',
+                'fontSize'   => 12,
+                'fontName'   => '',
+                'alignHoriz' => 'left',
+                'rowHeight'  => 1,
+
+            ],
+            self::RE_CROSS        => [],
+            self::RE_MARKUP       => [],
         ],
     ];
 
@@ -67,6 +77,8 @@ class Report
 
                     } elseif ($name === self::RE_TEXT) {
                         $driver->text($data['x'], $data['y'], $data['text'], array_merge($default['objects'][self::RE_TEXT], $data['param']));
+                    } elseif ($name === self::RE_TEXT_IN_RECT) {
+                        $driver->textInRect($data['x'], $data['y'], $data['w'], $data['h'], $data['text'], array_merge($default['objects'][self::RE_TEXT_IN_RECT], $data['param']));
                     } elseif ($name === self::RE_CROSS) {
                         $driver->cross($data['x'], $data['y'], array_merge($default['objects'][self::RE_CROSS], $data['param']));
                     } elseif ($name === self::RE_MARKUP) {
@@ -115,6 +127,11 @@ class Report
     public function text($x, $y, $text, array $param = [])
     {
         $this->addObject(['name' => self::RE_TEXT, 'data' => ['x' => $x, 'y' => $y, 'text' => $text, 'param' => $param]]);
+    }
+
+    public function textInRect($x, $y, $w, $h, string $text, array $param = [])
+    {
+        $this->addObject(['name' => self::RE_TEXT_IN_RECT, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'h' => $h, 'text' => $text, 'param' => $param]]);
     }
 
     public function markup($param = [])

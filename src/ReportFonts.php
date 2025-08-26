@@ -45,7 +45,7 @@ class ReportFonts
     public static function metrik(string $text, string $alias)
     {
         $common = 8.5;
-        $h      = '1';
+        $h      = 1;
         $w      = 0;
         $len    = strlen($text);
 

@@ -45,7 +45,12 @@ class ReportDriver
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-    public function text($x, $y, $text, $param = [])
+    public function text($x, $y, string $text, $param = [])
+    {
+        throw new \Exception('не реализован метод ' . __METHOD__);
+    }
+
+    public function textInRect($x, $y, $w, $h, string $text, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
@@ -85,11 +90,49 @@ class ReportDriver
         $v = $this->virtualArea;
         return translate($virtualY, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
     }
+
     public function delta($virtualDelta)
     {
         $r = $this->realArea;
         $v = $this->virtualArea;
         return abs($this->x($virtualDelta) - $this->x(0));
+    }
+    public function transform(string $coordName, $value, string $convertTo)
+    {
+        $r = $this->realArea;
+        $v = $this->virtualArea;
+        if ($convertTo === 'real') {
+            if ($coordName === 'x') {
+                return translate($value, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2);
+            }
+            if ($coordName === 'y') {
+                return translate($value, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
+            }
+            if ($coordName === 'w' || $coordName === 'dx') {
+                return abs(translate($value, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2)
+                     - translate(0, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2));
+            }
+            if ($coordName === 'h' || $coordName === 'dy') {
+                return abs(translate($value, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2)
+                     - translate(0, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2));
+            }
+        } else {
+            if ($coordName === 'x') {
+                return translate($value, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2);
+            }
+            if ($coordName === 'y') {
+                return translate($value, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2);
+            }
+            if ($coordName === 'w' || $coordName === 'dx') {
+                return abs(translate($value, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2)
+                     - translate(0, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2));
+            }
+            if ($coordName === 'h' || $coordName === 'dy') {
+                return abs(translate($value, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2)
+                     - translate(0, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2));
+            }
+
+        }
     }
 
     public function width()
@@ -105,9 +148,7 @@ class ReportDriver
 
     protected function metrik($name, $value)
     {
-
         throw new \Exception('не реализован метод ' . __METHOD__ . ' для параметра ' . $name);
-
     }
 
     protected function textSize($text, $alias, $fontSize)

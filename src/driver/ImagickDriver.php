@@ -180,7 +180,7 @@ class ImagickDriver extends ReportDriver
                         if ($rowHeight === 0) {
                             $rowHeight = $this->transform('h', $charSize['h'], 'virtual');
                         }
-                        if ($lastw + $charSize['w'] <= $rw) {
+                        if ($lastw + $charSize['w'] < $rw) {
                             $strings[count($strings) - 1] .= $char;
                             $lastw += $charSize['w'];
                         } else {
@@ -222,7 +222,8 @@ class ImagickDriver extends ReportDriver
         $m = ReportFonts::metrik($text, $alias);
 
         return [
-            'w' => $fontSize * $m['w'] * $k / 4.65,
+            // 'w' => $fontSize * $m['w'] * $k / 4.66,
+            'w' => $fontSize * $m['w'] * $k / 4.53,
             'h' => $fontSize * $m['h'] * $k * 3.385,
         ];
 
@@ -341,7 +342,7 @@ class ImagickDriver extends ReportDriver
             return $value * (min($r['xmax'], $r['ymax']) / 1024);
         }
         if ($name === 'fontSize') {
-            return $value * 3.6 * (min($r['xmax'], $r['ymax']) / 1024);
+            return $value * 3.5 * (min($r['xmax'], $r['ymax']) / 1024);
         }
         parent::metrik($name, $value);
 

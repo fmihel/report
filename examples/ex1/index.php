@@ -31,9 +31,9 @@ try {
     // $report->line(10, 100, 100, 190, ['color' => '#000000', 'width' => 6]);
     $report->box(200, 200, 400, 50, ['color' => '#ff0000', 'bg' => '#00ff0099']);
     $vert  = 'bottom';
-    $horiz = 'center';
-    $report->textInRect(200, 200, 200, 100, "emglish съешь еще этих\n французски\n булок no english!",
-        ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => 'bottom', 'alignHoriz' => 'left']);
+    $horiz = 'right';
+    $report->textInRect(200, 200, 400, 100, "Как говорила в июле 1805 года известная Анна Павловна Шерер, фрейлина и приближенная императрицы Марии Феодоровны, встречая важного и чиновного князя Василия, первого приехавшего на ее вечер. Анна Павловна кашляла несколько дней, у нее был грипп, как она говорила (грипп был тогда новое слово, употреблявшееся только редкими). В записочках, разосланных утром с красным лакеем, было написано без различия во всех:«Si vous n'avez rien de mieux à faire, Monsieur le comte (или mon prince), et si la perspective de passer la soirée chez une pauvre malade ne vous effraye pas trop, je serai charmée de vous voir chez moi entre 7 et 10 heures. Annette Scherer»",
+        ['fontName' => 'roboto', 'fontSize' => 10, 'alignHoriz' => 'left']);
 
     // $report->text(400, 250, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
 

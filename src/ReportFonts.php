@@ -1,7 +1,10 @@
 <?php
 namespace fmihel\report;
 
-require_once __DIR__ . '/maps/roboto.php';
+use fmihel\report\map\IReportMap;
+use fmihel\report\map\RobotoMap;
+
+require_once __DIR__ . '/maps/RobotoMap.php';
 
 class ReportFonts
 {
@@ -34,7 +37,7 @@ class ReportFonts
         }
     }
 
-    public static function addMap(string $alias, string $map)
+    public static function addMap(string $alias, IReportMap $map)
     {
         self::$maps[$alias] = $map;
     }
@@ -48,7 +51,7 @@ class ReportFonts
 
         if (isset(self::$maps[$alias])) {
             $map = self::$maps[$alias];
-            $w   = $map::stringWidth($text);
+            $w   = $map->width($text);
         } else {
             $w = $len * $common;
         }
@@ -58,4 +61,4 @@ class ReportFonts
 
 }
 
-ReportFonts::addMap('roboto', 'rmap\roboto');
+ReportFonts::addMap('roboto', new RobotoMap());

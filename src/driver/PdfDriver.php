@@ -7,7 +7,6 @@ require_once __DIR__ . '/../routines/hexToRgba.php';
 require_once __DIR__ . '/../routines/hexToRgbw.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
-use fmihel\console;
 use fmihel\report\ReportConsts;
 use fmihel\report\ReportFonts;
 use function fmihel\report\routines\hexToRgb;
@@ -126,18 +125,63 @@ class PdfDriver extends ReportDriver
 
     public function text($x, $y, $text, $param = [])
     {
+
+        $offX = 0;
+        $offY = 0;
+
         if ($param['fontName']) {
             $this->pdf->SetFont(ReportFonts::get($param['fontName'])['name']);
+
+            if ($param['alignVert']) {
+                if ($param['alignVert'] === 'top') {
+                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+                    $offY = -$size['h'];
+                } elseif ($param['alignVert'] === 'center') {
+                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+                    $offY = -$size['h'] / 2;
+                }
+            }
+
+            if ($param['box']) {
+                $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+                $ax   = 0;
+                $ay   = 0;
+                if ($param['alignVert'] === 'top') {
+                    $ay = -$size['h'];
+                } elseif ($param['alignVert'] === 'center') {
+                    $ay = -$size['h'] / 2;
+                }
+                $this->pdf->SetDrawColorArray(hexToRgb($param['box']));
+                $this->pdf->Rect($this->x($x) + $ax, $this->y($y) + $ay, $size['w'], $size['h'], 'D', [], hexToRgbw($param['box']));
+            }
+
         }
+
         $this->pdf->SetFontSize($this->metrik('fontSize', $param['fontSize']));
         $this->pdf->SetTextColorArray(hexToRgb($param['color']));
 
         $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
-        console::log($size);
 
-        $this->pdf->Text($this->x($x), $this->y($y), $text);
+        $this->pdf->Text($this->x($x) + $offX, $this->y($y) + $offY, $text);
 
     }
+
+    protected function textSize($text, $alias, $fontSize)
+    {
+
+        $p = $this->getCurrentParam();
+        $r = $p['realArea'];
+        $k = min($r['xmax'], $r['ymax']) / 211;
+
+        $m = ReportFonts::metrik($text, $alias);
+
+        return [
+            'w' => $fontSize * $m['w'] * $k / 32.5,
+            'h' => $fontSize * $m['h'] * $k * 0.7,
+        ];
+
+    }
+
     public function cross($x, $y, $param = [])
     {
         $pdf   = $this->pdf;
@@ -219,22 +263,6 @@ class PdfDriver extends ReportDriver
             return $value * 2;
         }
         parent::metrik($name, $value);
-    }
-
-    public function textSize($text, $alias, $fontSize)
-    {
-
-        $p = $this->getCurrentParam();
-        $r = $p['realArea'];
-        $k = min($r['xmax'], $r['ymax']) / 211;
-
-        $m = ReportFonts::metrik($text, $alias);
-
-        return [
-            'w' => $fontSize * $m['w'] * $k,
-            'h' => $fontSize * $m['h'] * $k,
-        ];
-
     }
 
     public static function addFont(string $alias, string $fontFileName, array $param = [])

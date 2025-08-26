@@ -29,9 +29,11 @@ class Report
             ],
 
             self::RE_TEXT   => [
-                'color'    => '#000000',
-                'fontSize' => 12,
-                'fontName' => '',
+                'color'     => '#000000',
+                'fontSize'  => 12,
+                'fontName'  => '',
+                'alignVert' => 'bottom',
+                'box'       => '#000000',
             ],
             self::RE_CROSS  => [],
             self::RE_MARKUP => [],
@@ -113,8 +115,8 @@ class Report
     public function text($x, $y, $text, array $param = [])
     {
         $this->addObject(['name' => self::RE_TEXT, 'data' => ['x' => $x, 'y' => $y, 'text' => $text, 'param' => $param]]);
-
     }
+
     public function markup($param = [])
     {
         $this->addObject(['name' => self::RE_MARKUP, 'data' => ['param' => $param]]);

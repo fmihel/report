@@ -19,8 +19,8 @@ class ImagickDriver extends ReportDriver
                 'xmax' => 1024,
                 'ymax' => 1448, //1024 * A4_RATIO,
 
-                // 'xmax' => 500,
-                // 'ymax' => 500 * ReportConsts::A4_RATIO, //1024 * A4_RATIO,
+                // 'xmax' => 2500,
+                // 'ymax' => 2500 * ReportConsts::A4_RATIO, //1024 * A4_RATIO,
             ],
             'virtualArea' => [
                 'xmin' => 0,
@@ -106,16 +106,65 @@ class ImagickDriver extends ReportDriver
     public function text($x, $y, $text, $param = [])
     {
         $draw = $this->getCurrentDraw();
-        // $draw->setFont(__DIR__.'/../vendor/tecnickcom/tcpdf/fonts/roboto.ttf');
+
+        $offX = 0;
+        $offY = 0;
+
         if ($param['fontName']) {
             $draw->setFont(ReportFonts::get($param['fontName'])['fontFileName']);
+
+            if ($param['alignVert']) {
+                if ($param['alignVert'] === 'bottom') {
+                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+                    $offY = $size['h'];
+                } elseif ($param['alignVert'] === 'center') {
+                    $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+                    $offY = $size['h'] / 2;
+                }
+            }
+
+            if ($param['box']) {
+                $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+                $draw->setStrokeWidth($this->metrik('width', 1));
+                $draw->setStrokeColor($param['box']);
+                $draw->setFillColor('#00000000');
+
+                $ax = 0;
+                $ay = 0;
+                if ($param['alignVert'] === 'top') {
+                    $ay = -$size['h'];
+                } elseif ($param['alignVert'] === 'center') {
+                    $ay = -$size['h'] / 2;
+                }
+
+                $draw->rectangle($this->x($x) + $ax, $this->y($y) + $ay, $this->x($x) + $size['w'] + $ax, $this->y($y) + $size['h'] + $ay);
+
+            }
+
         }
+
         $draw->setTextAntialias(true);
         $draw->setFontSize($this->metrik('fontSize', $param['fontSize']));
         $draw->setFillColor($param['color']);
         $draw->setStrokeColor('#00000000');
         $draw->setStrokeWidth(0);
-        $draw->annotation($this->x($x), $this->y($y), $text);
+        $draw->annotation($this->x($x) + $offX, $this->y($y) + $offY, $text);
+
+    }
+    protected function textSize($text, $alias, $fontSize)
+    {
+
+        $p = $this->getCurrentParam();
+        $r = $p['realArea'];
+        $k = min($r['xmax'], $r['ymax']) / 1024;
+
+        $m = ReportFonts::metrik($text, $alias);
+
+        return [
+            'w' => $fontSize * $m['w'] * $k / 7.1,
+            'h' => $fontSize * $m['h'] * $k * 3.2,
+
+        ];
 
     }
 
@@ -232,7 +281,7 @@ class ImagickDriver extends ReportDriver
             return $value * (min($r['xmax'], $r['ymax']) / 1024);
         }
         if ($name === 'fontSize') {
-            return $value * 3 * (min($r['xmax'], $r['ymax']) / 1024);
+            return $value * 3.4 * (min($r['xmax'], $r['ymax']) / 1024);
         }
         parent::metrik($name, $value);
 

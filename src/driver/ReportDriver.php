@@ -110,7 +110,7 @@ class ReportDriver
 
     }
 
-    public function textSize($text, $alias, $fontSize)
+    protected function textSize($text, $alias, $fontSize)
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }

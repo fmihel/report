@@ -142,7 +142,7 @@ class PdfDriver extends ReportDriver
                 }
             }
 
-            if ($param['box']) {
+            if ($param['colorFrame']) {
                 $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
                 $ax   = 0;
                 $ay   = 0;
@@ -151,8 +151,8 @@ class PdfDriver extends ReportDriver
                 } elseif ($param['alignVert'] === 'center') {
                     $ay = -$size['h'] / 2;
                 }
-                $this->pdf->SetDrawColorArray(hexToRgb($param['box']));
-                $this->pdf->Rect($this->x($x) + $ax, $this->y($y) + $ay, $size['w'], $size['h'], 'D', [], hexToRgbw($param['box']));
+                $this->pdf->SetDrawColorArray(hexToRgb($param['colorFrame']));
+                $this->pdf->Rect($this->x($x) + $ax, $this->y($y) + $ay, $size['w'], $size['h'], 'D', [], []);
             }
 
         }

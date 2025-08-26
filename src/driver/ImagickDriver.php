@@ -123,10 +123,10 @@ class ImagickDriver extends ReportDriver
                 }
             }
 
-            if ($param['box']) {
+            if ($param['colorFrame']) {
                 $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
                 $draw->setStrokeWidth($this->metrik('width', 1));
-                $draw->setStrokeColor($param['box']);
+                $draw->setStrokeColor($param['colorFrame']);
                 $draw->setFillColor('#00000000');
 
                 $ax = 0;

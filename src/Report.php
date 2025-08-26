@@ -29,11 +29,11 @@ class Report
             ],
 
             self::RE_TEXT   => [
-                'color'     => '#000000',
-                'fontSize'  => 12,
-                'fontName'  => '',
-                'alignVert' => 'bottom',
-                'box'       => '#000000',
+                'color'      => '#000000',
+                'fontSize'   => 12,
+                'fontName'   => '',
+                'alignVert'  => 'bottom',
+                'colorFrame' => '',
             ],
             self::RE_CROSS  => [],
             self::RE_MARKUP => [],

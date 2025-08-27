@@ -1,4 +1,5 @@
 <?php
+// http://work/fmihel/report/report/examples/ex1/?jpg
 
 // ini_set("error_log", "/var/tmp/php-error.log");
 // ini_set('display_errors', 0);

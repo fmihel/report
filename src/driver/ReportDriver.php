@@ -55,19 +55,59 @@ class ReportDriver
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
 
+    public function prepare_textInRect($x, $y, $w, $h, string $text, array $param = []): array
+    {
+        if (! $param['fontName']) {
+            throw new \Exception('не указано имa шрифта fontName');
+        }
+
+        $strings   = [];
+        $rw        = $this->delta($w);
+        $lastw     = 0;
+        $rowHeight = 0;
+        $allHeight = 0;
+        $texts     = mb_str_split($text);
+        foreach ($texts as $char) {
+
+            if (empty($strings)) {
+                $strings[] = '';
+                $lastw     = 0;
+            }
+            if ($char !== "\n") {
+                if ($lastw > 0 || $char !== ' ') {
+                    $charSize = $this->textSize($char, $param['fontName'], $param['fontSize']);
+                    if ($rowHeight === 0) {
+                        $rowHeight = $this->transform('h', $charSize['h'], 'virtual');
+                    }
+                    $allHeight += $rowHeight;
+
+                    if ($lastw + $charSize['w'] < $rw) {
+                        $strings[count($strings) - 1] .= $char;
+                        $lastw += $charSize['w'];
+                    } else {
+                        $strings[] = ($char !== ' ' ? $char : '');
+                        $lastw     = ($char === ' ' ? 0 : $charSize['w']);
+                    }
+                }
+            } else {
+                $strings[] = '';
+                $lastw     = 0;
+            }
+        }
+
+        return [
+            'strings'   => $strings,
+            'height'    => $allHeight,
+            'width'     => $w,
+            'rowHeight' => $rowHeight,
+        ];
+
+    }
+
     public function image($x, $y, $w, string $filename, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-
-    // public function fontName(string $name, $param = [])
-    // {
-    //     throw new \Exception('не реализован метод ' . __METHOD__);
-    // }
-    // public function fontSize(string $name, $param = [])
-    // {
-    //     throw new \Exception('не реализован метод ' . __METHOD__);
-    // }
 
     public function markup($param = [])
     {

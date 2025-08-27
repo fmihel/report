@@ -59,8 +59,6 @@ try {
     $report->line(10, 10, 500, 10);
     $report->cross(100, 100);
 
-    // $report->out(ImagickDriver::create(), '');
-
     ReportFonts::add('comic', FONT_PATH . '/comics/comics.ttf', [
         'files' => [
             FONT_PATH . '/comics/comics.ctg.z',

@@ -135,6 +135,7 @@ class Report
     {
         $this->addObject(['name' => self::RE_TEXT_IN_RECT, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'h' => $h, 'text' => $text, 'param' => $param]]);
     }
+
     public function image($x, $y, $w, string $filename, array $param = [])
     {
         $this->addObject(['name' => self::RE_IMAGE, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'filename' => $filename, 'param' => $param]]);

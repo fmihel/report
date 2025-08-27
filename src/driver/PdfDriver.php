@@ -173,59 +173,26 @@ class PdfDriver extends ReportDriver
         $this->pdf->Text($this->x($x) + $offX, $this->y($y) + $offY, $text);
 
     }
-
     public function textInRect($x, $y, $w, $h, string $text, array $param = [])
     {
-        if ($param['fontName']) {
-            $this->pdf->SetFont(ReportFonts::get($param['fontName'])['name']);
-
-            $strings   = [];
-            $rw        = $this->delta($w);
-            $lastw     = 0;
-            $rowHeight = 0;
-
-            $texts = mb_str_split($text);
-            foreach ($texts as $char) {
-
-                if (empty($strings)) {
-                    $strings[] = '';
-                    $lastw     = 0;
-                }
-                if ($char !== "\n") {
-                    if ($lastw > 0 || $char !== ' ') {
-                        $charSize = $this->textSize($char, $param['fontName'], $param['fontSize']);
-                        if ($rowHeight === 0) {
-                            $rowHeight = $this->transform('h', $charSize['h'], 'virtual');
-                        }
-                        if ($lastw + $charSize['w'] <= $rw) {
-                            $strings[count($strings) - 1] .= $char;
-                            $lastw += $charSize['w'];
-                        } else {
-                            $strings[] = ($char !== ' ' ? $char : '');
-                            $lastw     = ($char === ' ' ? 0 : $charSize['w']);
-                        }
-                    }
-                } else {
-                    $strings[] = '';
-                    $lastw     = 0;
-                }
-            }
-
-            $offX = 0;
-            if ($param['alignHoriz'] === 'right') {
-                $offX = $w;
-            } elseif ($param['alignHoriz'] === 'center') {
-                $offX = $w / 2;
-            }
-
-            $param['alignVert'] = 'bottom';
-            $pos                = $y;
-            foreach ($strings as $string) {
-                $this->text($x + $offX, $pos, trim($string), $param);
-                $pos += $rowHeight;
-            }
-        } else {
+        if (! $param['fontName']) {
             throw new \Exception('не указано имa шрифта fontName');
+        }
+
+        $prepare = $this->prepare_textInRect($x, $y, $w, $h, $text, $param);
+
+        $offX = 0;
+        if ($param['alignHoriz'] === 'right') {
+            $offX = $w;
+        } elseif ($param['alignHoriz'] === 'center') {
+            $offX = $w / 2;
+        }
+
+        $param['alignVert'] = 'bottom';
+        $pos                = $y;
+        foreach ($prepare['strings'] as $string) {
+            $this->text($x + $offX, $pos, trim($string), $param);
+            $pos += $prepare['rowHeight'];
         }
     }
     public function image($x, $y, $w, string $filename, array $param = [])

@@ -1,13 +1,13 @@
 <?php
 namespace fmihel\report\driver;
 
-use fmihel\report\ReportConsts;
+use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 use function fmihel\report\routines\imgSize;
 use function fmihel\report\routines\randomString;
 use function fmihel\report\routines\translate;
 
-require_once __DIR__ . '/../ReportConsts.php';
+require_once __DIR__ . '/../Report.php';
 require_once __DIR__ . '/ReportDriver.php';
 require_once __DIR__ . '/../routines/translate.php';
 require_once __DIR__ . '/../routines/imgSize.php';
@@ -17,7 +17,7 @@ require_once __DIR__ . '/../ReportFonts.php';
 class ImagickDriver extends ReportDriver
 {
     private $default = [
-        ReportConsts::PORTRAIT  => [
+        Report::PORTRAIT  => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -34,7 +34,7 @@ class ImagickDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
             ],
         ],
-        ReportConsts::LANDSCAPE => [
+        Report::LANDSCAPE => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,

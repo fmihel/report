@@ -1,14 +1,13 @@
 <?php
 namespace fmihel\report\driver;
 
-require_once __DIR__ . '/../ReportConsts.php';
 require_once __DIR__ . '/../routines/hexToRgb.php';
 require_once __DIR__ . '/../routines/hexToRgba.php';
 require_once __DIR__ . '/../routines/hexToRgbw.php';
 require_once __DIR__ . '/../routines/imgSize.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
-use fmihel\report\ReportConsts;
+use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 use function fmihel\report\routines\hexToRgb;
 use function fmihel\report\routines\hexToRgbw;
@@ -23,12 +22,12 @@ class PdfDriver extends ReportDriver
     const PATH_TCPDF_FONTS_DEFAULT = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
 
     private $default = [
-        ReportConsts::PORTRAIT  => [
+        Report::PORTRAIT  => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
                 'xmax' => 211,
-                'ymax' => 298, //210 * A4_RATIO
+                'ymax' => 298, //211 * A4_RATIO
             ],
             'virtualArea' => [
                 'xmin' => 0,
@@ -37,7 +36,7 @@ class PdfDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
             ],
         ],
-        ReportConsts::LANDSCAPE => [
+        Report::LANDSCAPE => [
             'realArea'    => [
                 'xmin' => 0,
                 'ymin' => 0,
@@ -87,7 +86,7 @@ class PdfDriver extends ReportDriver
         $this->setRealArea($param['realArea']);
         $this->setVirtualArea($param['virtualArea']);
 
-        $this->pdf->AddPage($orientation === ReportConsts::LANDSCAPE ? 'L' : 'P');
+        $this->pdf->AddPage($orientation === Report::LANDSCAPE ? 'L' : 'P');
         $this->currentPage = count($this->params) - 1;
 
     }

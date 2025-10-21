@@ -25,7 +25,7 @@ class ImagickDriver extends ReportDriver
                 'ymax' => 1448, //1024 * A4_RATIO,
 
                 // 'xmax' => 2500,
-                // 'ymax' => 2500 * ReportConsts::A4_RATIO, //1024 * A4_RATIO,
+                // 'ymax' => 2500 * Report::A4_RATIO, //1024 * A4_RATIO,
             ],
             'virtualArea' => [
                 'xmin' => 0,
@@ -63,7 +63,7 @@ class ImagickDriver extends ReportDriver
 
     public function newPage(array $param = [])
     {
-        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportConsts::PORTRAIT;
+        $orientation = isset($param['orientation']) ? $param['orientation'] : Report::PORTRAIT;
 
         $param = array_merge_recursive(
             $this->default[$orientation],

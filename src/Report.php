@@ -9,14 +9,14 @@ class Report
     const LANDSCAPE = 'landscape';
     const PORTRAIT  = 'portrait';
 
-    private const RE_PAGE         = 'page';
-    private const RE_LINE         = 'line';
-    private const RE_BOX          = 'box';
-    private const RE_TEXT         = 'text';
-    private const RE_TEXT_IN_RECT = 'textInRect';
-    private const RE_CROSS        = 'cross';
-    private const RE_IMAGE        = 'image';
-    private const RE_MARKUP       = 'markup';
+    const RE_PAGE         = 'page';
+    const RE_LINE         = 'line';
+    const RE_BOX          = 'box';
+    const RE_TEXT         = 'text';
+    const RE_TEXT_IN_RECT = 'textInRect';
+    const RE_CROSS        = 'cross';
+    const RE_IMAGE        = 'image';
+    const RE_MARKUP       = 'markup';
 
     public $pages         = [];
     private $_currentPage = -1;

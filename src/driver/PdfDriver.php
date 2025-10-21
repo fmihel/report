@@ -1,6 +1,7 @@
 <?php
 namespace fmihel\report\driver;
 
+require_once __DIR__ . '/../Report.php';
 require_once __DIR__ . '/../routines/hexToRgb.php';
 require_once __DIR__ . '/../routines/hexToRgba.php';
 require_once __DIR__ . '/../routines/hexToRgbw.php';
@@ -19,7 +20,7 @@ use TCPDF;
 
 class PdfDriver extends ReportDriver
 {
-    const PATH_TCPDF_FONTS_DEFAULT = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
+    const PATH_TCPDF_FONTS_DEFAULT = __DIR__ . '/../../../../../vendor/tecnickcom/tcpdf/fonts';
 
     private $default = [
         Report::PORTRAIT  => [
@@ -77,7 +78,7 @@ class PdfDriver extends ReportDriver
     }
     public function newPage(array $param = [])
     {
-        $orientation = isset($param['orientation']) ? $param['orientation'] : ReportConsts::PORTRAIT;
+        $orientation = isset($param['orientation']) ? $param['orientation'] : Report::PORTRAIT;
         $param       = array_merge_recursive(
             $this->default[$orientation],
             $param

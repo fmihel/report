@@ -23,13 +23,25 @@ console::line();
 console::log((isset($_REQUEST['pdf']) ? 'pdf' : 'jpg') . ' start');
 
 try {
+
+    PdfDriver::$PATH_TCPDF_FONTS = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
+    ReportFonts::add('comic', FONT_PATH . '/comics/comics.ttf', [
+        'files' => [
+            FONT_PATH . '/comics/comics.ctg.z',
+            FONT_PATH . '/comics/comics.php',
+            FONT_PATH . '/comics/comics.z',
+        ],
+    ]);
+
     $report = new Report();
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
     $report->markup();
+
     // $report->line(10, 10, 100, 100, ['color' => '#000000', 'width' => 1]);
     // $report->line(10, 50, 100, 140, ['color' => '#000000', 'width' => 3]);
     // $report->line(10, 100, 100, 190, ['color' => '#000000', 'width' => 6]);
+
     $report->box(200, 200, 400, 50, ['color' => '#ff0000', 'bg' => '#00ff0099']);
     $vert  = 'bottom';
     $horiz = 'right';
@@ -37,6 +49,7 @@ try {
         ['fontSize' => 5, 'alignHoriz' => 'left']);
 
     $report->image(100, 100, 200, 'D:\tmp\image.jpg');
+
     // $report->text(400, 250, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 10, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
 
     // $report->text(400, 300, 'roboto русский', ['fontName' => 'roboto', 'fontSize' => 15, 'alignVert' => $vert, 'alignHoriz' => $horiz]);
@@ -57,14 +70,6 @@ try {
     $report->markup();
     $report->line(10, 10, 500, 10);
     $report->cross(100, 100);
-
-    ReportFonts::add('comic', FONT_PATH . '/comics/comics.ttf', [
-        'files' => [
-            FONT_PATH . '/comics/comics.ctg.z',
-            FONT_PATH . '/comics/comics.php',
-            FONT_PATH . '/comics/comics.z',
-        ],
-    ]);
 
     if (isset($_REQUEST['pdf'])) {
         $report->out(new PdfDriver(), 0, 'echo', __DIR__ . '/out_report.pdf');

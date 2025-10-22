@@ -132,8 +132,14 @@ class PdfDriver extends ReportDriver
         $offX = 0;
         $offY = 0;
 
-        if ($param['fontName']) {
+        $haveFont = isset($param['fontName']) && $param['fontName'];
+
+        if ($haveFont) {
+
             $this->pdf->SetFont(ReportFonts::get($param['fontName'])['name']);
+            if (isset($param['maxWidth']) && $param['maxWidth'] > 0) {
+                $text = $this->textCrop($text, $param['maxWidth'], $param['fontName'], $param['fontSize']);
+            }
             $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
             if ($param['alignVert']) {
@@ -164,11 +170,15 @@ class PdfDriver extends ReportDriver
             // }
 
         }
+        if ($haveFont) {
 
-        $this->pdf->SetFontSize($this->metrik('fontSize', $param['fontSize']));
-        $this->pdf->SetTextColorArray(hexToRgb($param['color']));
+            $this->pdf->SetFontSize($this->metrik('fontSize', $param['fontSize']));
+        }
+        if (isset($param['color'])) {
+            $this->pdf->SetTextColorArray(hexToRgb($param['color']));
+        }
 
-        $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
+        // $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
         $this->pdf->Text($this->x($x) + $offX, $this->y($y) + $offY, $text);
 
@@ -217,7 +227,6 @@ class PdfDriver extends ReportDriver
     }
     protected function textSize($text, $alias, $fontSize)
     {
-
         $p = $this->getCurrentParam();
         $r = $p['realArea'];
         $k = min($r['xmax'], $r['ymax']) / 211;
@@ -228,6 +237,49 @@ class PdfDriver extends ReportDriver
             'w' => $fontSize * $m['w'] * $k / 22,
             'h' => $fontSize * $m['h'] * $k * 0.7,
         ];
+    }
+    protected function textCrop($text, $width, $alias, $fontSize): string
+    {
+        $metrik = $this->textSize($text, $alias, $fontSize);
+        $width  = $this->delta($width);
+        if ($metrik['w'] <= $width) {
+            return $text;
+        }
+
+        $result   = '';
+        $w_result = 0;
+        $length   = mb_strlen($text);
+        while ($length > 0) {
+
+            if (($len_left = (int) ($length / 2)) === 0) {
+                break;
+            }
+
+            // $len_right = $length - $len_left;
+
+            $left  = mb_substr($text, 0, $len_left);
+            $right = mb_substr($text, $len_left);
+
+            $metrik = $this->textSize($left, $alias, $fontSize);
+
+            $w = $w_result + $metrik['w'];
+            if ($w === $width) {
+                $result .= $left;
+                break;
+            }
+
+            if ($w > $width) {
+                $text = $left;
+            } else {
+                $result .= $left;
+                $w_result = $w;
+                $text     = $right;
+            }
+
+            $length = mb_strlen($text);
+        }
+
+        return $result;
 
     }
 
@@ -249,6 +301,7 @@ class PdfDriver extends ReportDriver
         $param = array_merge([
             'frame' => true,
             'grid'  => 50,
+            'scale' => true,
         ], $param);
 
         $page = $this->getCurrentParam();
@@ -265,11 +318,20 @@ class PdfDriver extends ReportDriver
             while ($x < $v['xmax']) {
                 $pdf->line($this->x($x), $this->y($v['ymin']), $this->x($x), $this->y($v['ymax']));
                 $x += $param['grid'];
+                if ($param['scale']) {
+                    $this->text($x - 22, 10, $x, ['color' => '#9F9F9F']);
+                }
+
             }
             $y = $v['ymin'];
             while ($y < $v['ymax']) {
                 $pdf->line($this->x($v['xmin']), $this->y($y), $this->x($v['xmax']), $this->y($y));
                 $y += $param['grid'];
+                if ($param['scale']) {
+                    $this->text(6, $y - 14, $y, ['color' => '#9F9F9F']);
+                    $this->text(960, $y - 14, $y, ['color' => '#9F9F9F']);
+                }
+
             }
 
         }

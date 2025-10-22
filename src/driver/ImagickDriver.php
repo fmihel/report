@@ -115,8 +115,13 @@ class ImagickDriver extends ReportDriver
         $offX = 0;
         $offY = 0;
 
-        if ($param['fontName']) {
+        $haveFont = isset($param['fontName']) && $param['fontName'];
+        if ($haveFont) {
             $draw->setFont(ReportFonts::get($param['fontName'])['fontFileName']);
+            if (isset($param['maxWidth']) && $param['maxWidth'] > 0) {
+                $text = $this->textCrop($text, $param['maxWidth'], $param['fontName'], $param['fontSize']);
+            }
+
             $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
             if ($param['alignVert']) {
@@ -153,8 +158,14 @@ class ImagickDriver extends ReportDriver
         }
 
         $draw->setTextAntialias(true);
-        $draw->setFontSize($this->metrik('fontSize', $param['fontSize']));
-        $draw->setFillColor($param['color']);
+        if ($haveFont) {
+            $draw->setFontSize($this->metrik('fontSize', $param['fontSize']));
+        }
+
+        if (isset($param['color'])) {
+            $draw->setFillColor($param['color']);
+        }
+
         $draw->setStrokeColor('#00000000');
         $draw->setStrokeWidth(0);
         $draw->annotation($this->x($x) + $offX, $this->y($y) + $offY, $text);
@@ -225,11 +236,57 @@ class ImagickDriver extends ReportDriver
 
     }
 
+    protected function textCrop($text, $width, $alias, $fontSize): string
+    {
+        $metrik = $this->textSize($text, $alias, $fontSize);
+        $width  = $this->delta($width);
+        if ($metrik['w'] <= $width) {
+            return $text;
+        }
+
+        $result   = '';
+        $w_result = 0;
+        $length   = mb_strlen($text);
+        while ($length > 0) {
+
+            if (($len_left = (int) ($length / 2)) === 0) {
+                break;
+            }
+
+            // $len_right = $length - $len_left;
+
+            $left  = mb_substr($text, 0, $len_left);
+            $right = mb_substr($text, $len_left);
+
+            $metrik = $this->textSize($left, $alias, $fontSize);
+
+            $w = $w_result + $metrik['w'];
+            if ($w === $width) {
+                $result .= $left;
+                break;
+            }
+
+            if ($w > $width) {
+                $text = $left;
+            } else {
+                $result .= $left;
+                $w_result = $w;
+                $text     = $right;
+            }
+
+            $length = mb_strlen($text);
+        }
+
+        return $result;
+
+    }
+
     public function markup($param = [])
     {
         $param = array_merge([
             'frame' => true,
             'grid'  => 50,
+            'scale' => true,
         ], $param);
 
         $page = $this->getCurrentParam();
@@ -239,17 +296,25 @@ class ImagickDriver extends ReportDriver
 
         if ($param['grid']) {
             $draw->setStrokeWidth(1);
-            $draw->setStrokeColor('#AAAAAA');
-
-            $x = $v['xmin'];
+            $color = '#AAAAAA';
+            $x     = $v['xmin'];
             while ($x < $v['xmax']) {
+                $draw->setStrokeColor($color);
                 $draw->line($this->x($x), $this->y($v['ymin']), $this->x($x), $this->y($v['ymax']));
                 $x += $param['grid'];
+                if ($param['scale']) {
+                    $this->text($x - 10, 10, $x, ['color' => '#000000']);
+                }
             }
             $y = $v['ymin'];
             while ($y < $v['ymax']) {
+                $draw->setStrokeColor($color);
                 $draw->line($this->x($v['xmin']), $this->y($y), $this->x($v['xmax']), $this->y($y));
                 $y += $param['grid'];
+                if ($param['scale']) {
+                    $this->text(10, $y + 5, $y, ['color' => '#000000']);
+                    $this->text(990, $y + 5, $y, ['color' => '#000000']);
+                }
             }
 
         }

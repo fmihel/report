@@ -2,18 +2,11 @@
 namespace fmihel\report\driver;
 
 require_once __DIR__ . '/../Report.php';
-require_once __DIR__ . '/../routines/hexToRgb.php';
-require_once __DIR__ . '/../routines/hexToRgba.php';
-require_once __DIR__ . '/../routines/hexToRgbw.php';
-require_once __DIR__ . '/../routines/imgSize.php';
 require_once __DIR__ . '/../ReportFonts.php';
 
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
-use function fmihel\report\routines\hexToRgb;
-use function fmihel\report\routines\hexToRgbw;
-use function fmihel\report\routines\imgSize;
-use function fmihel\report\routines\translate;
+use fmihel\report\ReportUtils;
 use TCPDF;
 
 // use TCPDF_FONTS;
@@ -98,30 +91,32 @@ class PdfDriver extends ReportDriver
 
     public function line($x1, $y1, $x2, $y2, $param = [])
     {
-        $pdf = $this->pdf;
-
-        $pdf->SetLineWidth($this->metrik('width', $param['width']));
-        $pdf->SetDrawColorArray(hexToRgb($param['color']));
-
-        $pdf->Line($this->x($x1), $this->y($y1), $this->x($x2), $this->y($y2));
+        if ($param['width'] > 0) {
+            $pdf = $this->pdf;
+            $pdf->SetLineWidth($this->metrik('width', $param['width']));
+            $pdf->SetDrawColorArray(ReportUtils::hexToRgb($param['color']));
+            $pdf->Line($this->x($x1), $this->y($y1), $this->x($x2), $this->y($y2));
+        }
 
     }
     public function box($x, $y, $dx, $dy, $param = [])
     {
         $pdf = $this->pdf;
-        $pdf->SetLineWidth($this->metrik('width', $param['width']));
-
         $out = '';
-        if (! empty($param['color'])) {
-            $out .= 'D';
-            $pdf->SetDrawColorArray(hexToRgb($param['color']));
+        if ($param['width'] > 0) {
+            $pdf->SetLineWidth($this->metrik('width', $param['width']));
+
+            if (! empty($param['color'])) {
+                $out .= 'D';
+                $pdf->SetDrawColorArray(ReportUtils::hexToRgb($param['color']));
+            }
         }
         if (! empty($param['bg'])) {
             $out .= 'F';
         }
 
         if ($out) {
-            $this->pdf->Rect($this->x($x), $this->y($y), $this->delta($dx), $this->delta($dy), $out, [], hexToRgbw($param['bg']));
+            $this->pdf->Rect($this->x($x), $this->y($y), $this->delta($dx), $this->delta($dy), $out, [], ReportUtils::hexToRgbw($param['bg']));
         }
 
     }
@@ -175,7 +170,7 @@ class PdfDriver extends ReportDriver
             $this->pdf->SetFontSize($this->metrik('fontSize', $param['fontSize']));
         }
         if (isset($param['color'])) {
-            $this->pdf->SetTextColorArray(hexToRgb($param['color']));
+            $this->pdf->SetTextColorArray(ReportUtils::hexToRgb($param['color']));
         }
 
         // $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
@@ -212,13 +207,13 @@ class PdfDriver extends ReportDriver
             $data = stream_get_contents($stream, -1);
             fclose($stream);
 
-            $size = imgSize($data);
+            $size = ReportUtils::imgSize($data);
             // $uri  = 'data://application/octet-stream;base64,' . base64_encode($image_as_stream);
             // $size = getimagesize($uri);
 
             $scale  = $size[1] / $size[0];
-            $width  = $this->delta(translate($size[0], 0, $size[0], 0, $w));
-            $height = $this->delta(translate($size[1], 0, $size[1], 0, $w * $scale));
+            $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
+            $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
 
             $this->pdf->Image($filename, $this->x($x), $this->y($y), $width, $height);
 
@@ -290,7 +285,7 @@ class PdfDriver extends ReportDriver
         $d     = abs($param['realArea']['xmax'] - $param['realArea']['xmin']) * 0.01;
 
         $pdf->SetLineWidth(0.2);
-        $pdf->SetDrawColorArray(hexToRgb('#000000'));
+        $pdf->SetDrawColorArray(ReportUtils::hexToRgb('#000000'));
 
         $pdf->Line($this->x($x), $this->y($y) - $d, $this->x($x), $this->y($y) + $d);
         $pdf->Line($this->x($x) - $d, $this->y($y), $this->x($x) + $d, $this->y($y));
@@ -311,7 +306,7 @@ class PdfDriver extends ReportDriver
         $pdf->SetLineWidth(0.1);
 
         if ($param['grid']) {
-            $pdf->SetDrawColorArray(hexToRgb('#cccccc'));
+            $pdf->SetDrawColorArray(ReportUtils::hexToRgb('#cccccc'));
             $pdf->SetLineWidth(0.1);
 
             $x = $v['xmin'];
@@ -338,7 +333,7 @@ class PdfDriver extends ReportDriver
 
         if ($param['frame']) {
             $pdf->SetLineWidth(1);
-            $pdf->SetDrawColorArray(hexToRgb('#ff0000'));
+            $pdf->SetDrawColorArray(ReportUtils::hexToRgb('#ff0000'));
 
             $pdf->line($r['xmin'], $r['ymin'], $r['xmax'] - 1, $r['ymin']);
             $pdf->line($r['xmin'], $r['ymin'], $r['xmin'], $r['ymax'] - 1);

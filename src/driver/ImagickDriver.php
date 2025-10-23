@@ -3,16 +3,12 @@ namespace fmihel\report\driver;
 
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
-use function fmihel\report\routines\imgSize;
-use function fmihel\report\routines\randomString;
-use function fmihel\report\routines\translate;
+use fmihel\report\ReportUtils;
 
 require_once __DIR__ . '/../Report.php';
 require_once __DIR__ . '/ReportDriver.php';
-require_once __DIR__ . '/../routines/translate.php';
-require_once __DIR__ . '/../routines/imgSize.php';
-require_once __DIR__ . '/../routines/randomString.php';
 require_once __DIR__ . '/../ReportFonts.php';
+require_once __DIR__ . '/../ReportUtils.php';
 
 class ImagickDriver extends ReportDriver
 {
@@ -88,15 +84,18 @@ class ImagickDriver extends ReportDriver
 
     public function line($x1, $y1, $x2, $y2, $param = [])
     {
-        $draw = $this->getCurrentDraw();
-        $draw->setStrokeColor($param['color']);
-        $draw->setStrokeWidth($this->metrik('width', $param['width']));
-        $draw->line($this->x($x1), $this->y($y1), $this->x($x2), $this->y($y2));
+        if ($param['width'] > 0) {
+            $draw = $this->getCurrentDraw();
+            $draw->setStrokeColor($param['color']);
+            $draw->setStrokeWidth($this->metrik('width', $param['width']));
+            $draw->line($this->x($x1), $this->y($y1), $this->x($x2), $this->y($y2));
+        }
     }
 
     public function box($x, $y, $dx, $dy, $param = [])
     {
         $draw = $this->getCurrentDraw();
+
         $draw->setStrokeWidth($this->metrik('width', $param['width']));
 
         $color = empty($param['color']) ? '#00000000' : $param['color'];
@@ -198,18 +197,18 @@ class ImagickDriver extends ReportDriver
     public function image($x, $y, $w, string $filename, array $param = [])
     {
 
-        $tmp = __DIR__ . '/tmp_' . randomString(5) . '.jpg';
+        $tmp = __DIR__ . '/tmp_' . ReportUtils::randomString(5) . '.jpg';
 
         $data = @file_get_contents($filename);
         @file_put_contents($tmp, $data);
-        $size = imgSize($data);
+        $size = ReportUtils::imgSize($data);
 
         $img = new \Imagick();
         $img->readImage($tmp);
 
         $scale  = $size[1] / $size[0];
-        $width  = $this->delta(translate($size[0], 0, $size[0], 0, $w));
-        $height = $this->delta(translate($size[1], 0, $size[1], 0, $w * $scale));
+        $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
+        $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
 
         $draw = $this->getCurrentDraw();
         $draw->composite(\Imagick::COMPOSITE_DEFAULT, $this->x($x), $this->y($y), $width, $height, $img);

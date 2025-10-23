@@ -1,6 +1,8 @@
 <?php
 namespace fmihel\report\driver;
 
+require_once __DIR__ . '/../ReportUtils.php';
+
 use fmihel\report\ReportUtils;
 
 class ReportDriver

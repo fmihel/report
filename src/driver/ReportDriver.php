@@ -59,7 +59,7 @@ class ReportDriver
      *  в $rowHeight можно указать высоту строки если не указать (0)
      *  тоs будет использоваться высота символа для текущешго шрифта и размера
      */
-    public function prepareText(string $text, $w, $rowHeight, string $alias, string $fontSize): array
+    protected function prepareText(string $text, $w, $rowHeight, string $alias, string $fontSize): array
     {
         if (! $alias) {
             throw new \Exception('не указано имя шрифта $alias');
@@ -108,11 +108,11 @@ class ReportDriver
 
     }
 
-    public function textSize($text, $alias, $fontSize)
+    protected function textSize($text, $alias, $fontSize)
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-    public function textCrop($text, $width, $alias, $fontSize): string
+    protected function textCrop($text, $width, $alias, $fontSize): string
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }

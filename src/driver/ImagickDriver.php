@@ -194,31 +194,7 @@ class ImagickDriver extends ReportDriver
         }
 
     }
-    public function image($x, $y, $w, string $filename, array $param = [])
-    {
-
-        $tmp = __DIR__ . '/tmp_' . ReportUtils::randomString(5) . '.jpg';
-
-        $data = @file_get_contents($filename);
-        @file_put_contents($tmp, $data);
-        $size = ReportUtils::imgSize($data);
-
-        $img = new \Imagick();
-        $img->readImage($tmp);
-
-        $scale  = $size[1] / $size[0];
-        $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
-        $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
-
-        $draw = $this->getCurrentDraw();
-        $draw->composite(\Imagick::COMPOSITE_DEFAULT, $this->x($x), $this->y($y), $width, $height, $img);
-
-        if (file_exists($tmp)) {
-            unlink($tmp);
-        }
-
-    }
-    public function textSize($text, $alias, $fontSize)
+    protected function textSize($text, $alias, $fontSize)
     {
 
         $p = $this->getCurrentParam();
@@ -235,7 +211,7 @@ class ImagickDriver extends ReportDriver
 
     }
 
-    public function textCrop($text, $width, $alias, $fontSize): string
+    protected function textCrop($text, $width, $alias, $fontSize): string
     {
         $metrik = $this->textSize($text, $alias, $fontSize);
         $width  = $this->delta($width);
@@ -280,6 +256,30 @@ class ImagickDriver extends ReportDriver
 
     }
 
+    public function image($x, $y, $w, string $filename, array $param = [])
+    {
+
+        $tmp = __DIR__ . '/tmp_' . ReportUtils::randomString(5) . '.jpg';
+
+        $data = @file_get_contents($filename);
+        @file_put_contents($tmp, $data);
+        $size = ReportUtils::imgSize($data);
+
+        $img = new \Imagick();
+        $img->readImage($tmp);
+
+        $scale  = $size[1] / $size[0];
+        $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
+        $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
+
+        $draw = $this->getCurrentDraw();
+        $draw->composite(\Imagick::COMPOSITE_DEFAULT, $this->x($x), $this->y($y), $width, $height, $img);
+
+        if (file_exists($tmp)) {
+            unlink($tmp);
+        }
+
+    }
     public function markup($param = [])
     {
         $param = array_merge([

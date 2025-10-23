@@ -201,7 +201,7 @@ class PdfDriver extends ReportDriver
             $pos += $prepare['rowHeight'];
         }
     }
-    public function textSize($text, $alias, $fontSize)
+    protected function textSize($text, $alias, $fontSize)
     {
         $p = $this->getCurrentParam();
         $r = $p['realArea'];
@@ -215,7 +215,7 @@ class PdfDriver extends ReportDriver
         ];
     }
 
-    public function textCrop($text, $width, $alias, $fontSize): string
+    protected function textCrop($text, $width, $alias, $fontSize): string
     {
         $metrik = $this->textSize($text, $alias, $fontSize);
         $width  = $this->delta($width);

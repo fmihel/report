@@ -185,7 +185,7 @@ class PdfDriver extends ReportDriver
             throw new \Exception('не указано имa шрифта fontName');
         }
 
-        $prepare = $this->prepare_textInRect($x, $y, $w, $h, $text, $param);
+        $prepare = $this->prepareText($text, $w, 0, $param['fontName'], $param['fontSize']);
 
         $offX = 0;
         if ($param['alignHoriz'] === 'right') {
@@ -201,27 +201,7 @@ class PdfDriver extends ReportDriver
             $pos += $prepare['rowHeight'];
         }
     }
-    public function image($x, $y, $w, string $filename, array $param = [])
-    {
-        if ($stream = @fopen($filename, 'r')) {
-
-            $data = stream_get_contents($stream, -1);
-            fclose($stream);
-
-            $size = ReportUtils::imgSize($data);
-            // $uri  = 'data://application/octet-stream;base64,' . base64_encode($image_as_stream);
-            // $size = getimagesize($uri);
-
-            $scale  = $size[1] / $size[0];
-            $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
-            $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
-
-            $this->pdf->Image($filename, $this->x($x), $this->y($y), $width, $height);
-
-        }
-
-    }
-    protected function textSize($text, $alias, $fontSize)
+    public function textSize($text, $alias, $fontSize)
     {
         $p = $this->getCurrentParam();
         $r = $p['realArea'];
@@ -234,7 +214,8 @@ class PdfDriver extends ReportDriver
             'h' => $fontSize * $m['h'] * $k * 0.7,
         ];
     }
-    protected function textCrop($text, $width, $alias, $fontSize): string
+
+    public function textCrop($text, $width, $alias, $fontSize): string
     {
         $metrik = $this->textSize($text, $alias, $fontSize);
         $width  = $this->delta($width);
@@ -276,6 +257,26 @@ class PdfDriver extends ReportDriver
         }
 
         return $result;
+
+    }
+    public function image($x, $y, $w, string $filename, array $param = [])
+    {
+        if ($stream = @fopen($filename, 'r')) {
+
+            $data = stream_get_contents($stream, -1);
+            fclose($stream);
+
+            $size = ReportUtils::imgSize($data);
+            // $uri  = 'data://application/octet-stream;base64,' . base64_encode($image_as_stream);
+            // $size = getimagesize($uri);
+
+            $scale  = $size[1] / $size[0];
+            $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
+            $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
+
+            $this->pdf->Image($filename, $this->x($x), $this->y($y), $width, $height);
+
+        }
 
     }
 

@@ -55,18 +55,22 @@ class ReportDriver
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
 
-    public function prepare_textInRect($x, $y, $w, $h, string $text, array $param = []): array
+    /** разбивает текст на строки, чтобы вписать его в область шириной $w
+     *  в $rowHeight можно указать высоту строки если не указать (0)
+     *  тоs будет использоваться высота символа для текущешго шрифта и размера
+     */
+    public function prepareText(string $text, $w, $rowHeight, string $alias, string $fontSize): array
     {
-        if (! $param['fontName']) {
-            throw new \Exception('не указано имa шрифта fontName');
+        if (! $alias) {
+            throw new \Exception('не указано имя шрифта $alias');
         }
 
         $strings   = [];
         $rw        = $this->delta($w);
         $lastw     = 0;
-        $rowHeight = 0;
         $allHeight = 0;
         $texts     = mb_str_split($text);
+
         foreach ($texts as $char) {
 
             if (empty($strings)) {
@@ -75,7 +79,7 @@ class ReportDriver
             }
             if ($char !== "\n") {
                 if ($lastw > 0 || $char !== ' ') {
-                    $charSize = $this->textSize($char, $param['fontName'], $param['fontSize']);
+                    $charSize = $this->textSize($char, $alias, $fontSize);
                     if ($rowHeight === 0) {
                         $rowHeight = $this->transform('h', $charSize['h'], 'virtual');
                     }
@@ -104,6 +108,14 @@ class ReportDriver
 
     }
 
+    public function textSize($text, $alias, $fontSize)
+    {
+        throw new \Exception('не реализован метод ' . __METHOD__);
+    }
+    public function textCrop($text, $width, $alias, $fontSize): string
+    {
+        throw new \Exception('не реализован метод ' . __METHOD__);
+    }
     public function image($x, $y, $w, string $filename, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
@@ -194,11 +206,6 @@ class ReportDriver
     protected function metrik($name, $value)
     {
         throw new \Exception('не реализован метод ' . __METHOD__ . ' для параметра ' . $name);
-    }
-
-    protected function textSize($text, $alias, $fontSize)
-    {
-        throw new \Exception('не реализован метод ' . __METHOD__);
     }
 
     public static function addFont(string $alias, string $fontFileName, array $param = [])

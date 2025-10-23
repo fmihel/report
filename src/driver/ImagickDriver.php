@@ -177,7 +177,7 @@ class ImagickDriver extends ReportDriver
             throw new \Exception('не указано имa шрифта fontName');
         }
 
-        $prepare = $this->prepare_textInRect($x, $y, $w, $h, $text, $param);
+        $prepare = $this->prepareText($text, $w, 0, $param['fontName'], $param['fontSize']);
 
         $offX = 0;
         if ($param['alignHoriz'] === 'right') {
@@ -218,7 +218,7 @@ class ImagickDriver extends ReportDriver
         }
 
     }
-    protected function textSize($text, $alias, $fontSize)
+    public function textSize($text, $alias, $fontSize)
     {
 
         $p = $this->getCurrentParam();
@@ -235,7 +235,7 @@ class ImagickDriver extends ReportDriver
 
     }
 
-    protected function textCrop($text, $width, $alias, $fontSize): string
+    public function textCrop($text, $width, $alias, $fontSize): string
     {
         $metrik = $this->textSize($text, $alias, $fontSize);
         $width  = $this->delta($width);

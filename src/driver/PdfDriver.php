@@ -102,7 +102,7 @@ class PdfDriver extends ReportDriver
     {
         $pdf = $this->pdf;
         $out = '';
-        if ($param['width'] > 0) {
+        if (isset($param['width']) && $param['width'] > 0) {
             $pdf->SetLineWidth($this->metrik('width', $param['width']));
 
             if (! empty($param['color'])) {
@@ -110,7 +110,7 @@ class PdfDriver extends ReportDriver
                 $pdf->SetDrawColorArray(Color::hexToRgb($param['color']));
             }
         }
-        if (! empty($param['bg'])) {
+        if (isset($param['bg']) && (! empty($param['bg']))) {
             $out .= 'F';
         }
 
@@ -257,24 +257,51 @@ class PdfDriver extends ReportDriver
         return $result;
 
     }
-    public function image($x, $y, $w, string $filename, array $param = [])
+    public function image($x, $y, $w, $h, string $filename, array $param = [])
     {
-        if ($stream = @fopen($filename, 'r')) {
+        $left   = $this->x($x);
+        $top    = $this->y($y);
+        $width  = 0;
+        $height = 0;
 
-            $data = stream_get_contents($stream, -1);
-            fclose($stream);
+        if ($param['scale'] === 'h' || $param['scale'] === 'w' || $param['scale'] === 'inscribe') {
 
-            $size = Img::sizeFromImgStream($data);
-            // $uri  = 'data://application/octet-stream;base64,' . base64_encode($image_as_stream);
-            // $size = getimagesize($uri);
+            if ($stream = @fopen($filename, 'r')) {
 
-            $scale  = $size[1] / $size[0];
-            $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $w));
-            $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
+                $data = stream_get_contents($stream, -1);
+                fclose($stream);
 
-            $this->pdf->Image($filename, $this->x($x), $this->y($y), $width, $height);
+                $size  = Img::sizeFromImgStream($data);
+                $scale = $size[1] / $size[0];
 
+                if ($param['scale'] === 'h') {
+
+                    $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $w));
+                    $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
+
+                } elseif ($param['scale'] === 'w') {
+
+                    $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $h / $scale));
+                    $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $h));
+
+                } else { // inscribe
+
+                    $width  = Math::translate($size[0], 0, $size[0], 0, $w);
+                    $height = Math::translate($size[1], 0, $size[1], 0, $w * $scale);
+                    if ($height > $h) {
+                        $width  = Math::translate($size[0], 0, $size[0], 0, $h / $scale);
+                        $height = Math::translate($size[1], 0, $size[1], 0, $h);
+                    }
+                    $width  = $this->delta($width);
+                    $height = $this->delta($height);
+                }
+            }
+        } else {
+            $width  = $this->delta($w);
+            $height = $this->delta($h);
         }
+
+        $this->pdf->Image($filename, $left, $top, $width, $height);
 
     }
 
@@ -353,7 +380,7 @@ class PdfDriver extends ReportDriver
 
     }
 
-    // private function toColor256(array $rgb)
+// private function toColor256(array $rgb)
     // {
     //     return [$rgb[0] * 256, $rgb[1] * 256, $rgb[2] * 256];
     // }

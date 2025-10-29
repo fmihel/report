@@ -49,7 +49,7 @@ class Report
                 'alignHoriz' => 'left',
             ],
             self::RE_IMAGE        => [
-
+                'scale' => 'none',
             ],
             self::RE_CROSS        => [],
             self::RE_MARKUP       => [],
@@ -89,7 +89,7 @@ class Report
                     } elseif ($name === self::RE_MARKUP) {
                         $driver->markup(array_merge($default['objects'][self::RE_MARKUP], $data['param']));
                     } elseif ($name === self::RE_IMAGE) {
-                        $driver->image($data['x'], $data['y'], $data['w'], $data['filename'], array_merge($default['objects'][self::RE_IMAGE], $data['param']));
+                        $driver->image($data['x'], $data['y'], $data['w'], $data['h'], $data['filename'], array_merge($default['objects'][self::RE_IMAGE], $data['param']));
                     }
                 }
             }
@@ -140,9 +140,9 @@ class Report
         $this->addObject(['name' => self::RE_TEXT_IN_RECT, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'h' => $h, 'text' => $text, 'param' => $param]]);
     }
 
-    public function image($x, $y, $w, string $filename, array $param = [])
+    public function image($x, $y, $w, $h, string $filename, array $param = [])
     {
-        $this->addObject(['name' => self::RE_IMAGE, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'filename' => $filename, 'param' => $param]]);
+        $this->addObject(['name' => self::RE_IMAGE, 'data' => ['x' => $x, 'y' => $y, 'w' => $w, 'h' => $h, 'filename' => $filename, 'param' => $param]]);
     }
 
     public function markup($param = [])

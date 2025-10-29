@@ -7,29 +7,36 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../autoload.php';
 
 use fmihel\console;
+use fmihel\report\driver\ImagickDriver;
 use fmihel\report\driver\PdfDriver;
 use fmihel\report\Report;
-
-// require_once __DIR__ . '/../../src/maps/ReportMap.php';
-// require_once __DIR__ . '/../../src/Report.php';
-// require_once __DIR__ . '/../../src/driver/ReportDriver.php';
-// require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
-// require_once __DIR__ . '/../../src/driver/PdfDriver.php';
 
 $MEDIA = __DIR__ . '/../media';
 
 try {
     PdfDriver::$PATH_TCPDF_FONTS = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
+    if (true) {
+        $driver   = new PdfDriver();
+        $filename = __DIR__ . '/out_report.pdf';
+    } else {
+        $driver   = new ImagickDriver();
+        $filename = __DIR__ . '/out_report.jpg';
+    }
 
     $report = new Report();
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
 
-    $report->image(50, 50, 150, $MEDIA . '/img1.png');
-    $report->image(50, 200, 500, $MEDIA . '/img2.jpeg');
+    $w = 100;
+    $h = 1000;
+    $report->image(50, 200, $w, $h, $MEDIA . '/img3.png', ['scale' => 'inscribe']);
+    // $report->image(50, 200, 100, 200, $MEDIA . '/img3.png', ['scale' => 'inscribe']);
 
+    // $report->box(50, 200, 500, 300);
+    $report->box(50, 200, $w, $h, ['color' => '#ff0000', 'width' => 3]);
     $report->markup();
-    $report->out(new PdfDriver(), 0, 'echo', __DIR__ . '/out_report.pdf');
+
+    $report->out($driver, 0, 'echo', $filename);
 
 } catch (\Exception $e) {
     console::error($e);

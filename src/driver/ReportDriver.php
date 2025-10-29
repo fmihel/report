@@ -114,7 +114,7 @@ class ReportDriver
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-    public function image($x, $y, $w, string $filename, array $param = [])
+    public function image($x, $y, $w, $h, string $filename, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }

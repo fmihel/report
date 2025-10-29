@@ -1,9 +1,9 @@
 <?php
-namespace fmihel\report\_utils;
+namespace fmihel\report\utils;
 
-trait randomString
+class Str
 {
-    public static function randomString($count)
+    public static function random($count)
     {
         $result = '';
         for ($i = 0; $i < $count; $i++) {
@@ -15,11 +15,9 @@ trait randomString
                 } else {
                     $result .= chr(rand(65, 90));
                 }
-
             }
         }
-
         return $result;
-
     }
+
 }

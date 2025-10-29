@@ -1,7 +1,7 @@
 <?php
-namespace fmihel\report;
+namespace fmihel\report\utils;
 
-class ReportUtils
+class Color
 {
     public static function hexToRgb(string $hexColor): array
     {
@@ -54,9 +54,9 @@ class ReportUtils
         if (strlen($hexColor) > 7) {
             $rgba = self::hexToRgba($hexColor);
             $a    = $rgba[3];
-            $r    = self::translate($a, 0, 1, 255, $rgba[0]);
-            $g    = self::translate($a, 0, 1, 255, $rgba[1]);
-            $b    = self::translate($a, 0, 1, 255, $rgba[2]);
+            $r    = Math::translate($a, 0, 1, 255, $rgba[0]);
+            $g    = Math::translate($a, 0, 1, 255, $rgba[1]);
+            $b    = Math::translate($a, 0, 1, 255, $rgba[2]);
 
             return [$r, $g, $b];
 
@@ -66,62 +66,5 @@ class ReportUtils
         }
         return [0, 0, 0];
     }
-    public static function imgSize($content)
-    {
-        if (gettype($content) !== 'string') {
-            return [0, 0];
-        }
 
-        if (mb_strlen(trim($content)) === 0) {
-            return [0, 0];
-        }
-
-        $uri = 'data://application/octet-stream;base64,' . base64_encode($content);
-
-        return getimagesize($uri);
-    }
-    public static function isHexColor($color): bool
-    {
-        $color  = strtolower($color);
-        $colors = str_split($color);
-        $count  = count($colors);
-
-        if ($count !== 7 && $count !== 9) {
-            return false;
-        }
-        if ($colors[0] !== '#') {
-            return false;
-        }
-
-        for ($i = 1; $i < $count; $i++) {
-            $code = ord($colors[$i]);
-            if (! (($code >= 97 && $code <= 102) || ($code >= 48 && $code <= 57))) {
-                return false;
-            }
-        }
-        return true;
-    }
-    public static function randomString($count)
-    {
-        $result = '';
-        for ($i = 0; $i < $count; $i++) {
-            if ($i === 0) {
-                $result .= chr(rand(65, 90));
-            } else {
-                if (rand(1, 10) > 6) {
-                    $result .= chr(rand(48, 57));
-                } else {
-                    $result .= chr(rand(65, 90));
-                }
-
-            }
-        }
-
-        return $result;
-
-    }
-    public static function translate($y, $y1, $y2, $x1, $x2, $prec = 0)
-    {
-        return round(($x2 * ($y - $y1) + $x1 * ($y2 - $y)) / ($y2 - $y1), $prec);
-    }
 }

@@ -1,9 +1,9 @@
 <?php
 namespace fmihel\report\driver;
 
-require_once __DIR__ . '/../ReportUtils.php';
+// require_once __DIR__ . '/../ReportUtils.php';
 
-use fmihel\report\ReportUtils;
+use fmihel\report\utils\Math;
 
 class ReportDriver
 {
@@ -139,13 +139,13 @@ class ReportDriver
     {
         $r = $this->realArea;
         $v = $this->virtualArea;
-        return ReportUtils::translate($virtualX, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2);
+        return Math::translate($virtualX, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2);
     }
     public function y($virtualY)
     {
         $r = $this->realArea;
         $v = $this->virtualArea;
-        return ReportUtils::translate($virtualY, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
+        return Math::translate($virtualY, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
     }
 
     public function delta($virtualDelta)
@@ -160,33 +160,33 @@ class ReportDriver
         $v = $this->virtualArea;
         if ($convertTo === 'real') {
             if ($coordName === 'x') {
-                return ReportUtils::translate($value, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2);
+                return Math::translate($value, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2);
             }
             if ($coordName === 'y') {
-                return ReportUtils::translate($value, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
+                return Math::translate($value, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
             }
             if ($coordName === 'w' || $coordName === 'dx') {
-                return abs(ReportUtils::translate($value, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2)
-                     - ReportUtils::translate(0, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2));
+                return abs(Math::translate($value, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2)
+                     - Math::translate(0, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2));
             }
             if ($coordName === 'h' || $coordName === 'dy') {
-                return abs(ReportUtils::translate($value, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2)
-                     - ReportUtils::translate(0, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2));
+                return abs(Math::translate($value, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2)
+                     - Math::translate(0, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2));
             }
         } else {
             if ($coordName === 'x') {
-                return ReportUtils::translate($value, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2);
+                return Math::translate($value, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2);
             }
             if ($coordName === 'y') {
-                return ReportUtils::translate($value, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2);
+                return Math::translate($value, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2);
             }
             if ($coordName === 'w' || $coordName === 'dx') {
-                return abs(ReportUtils::translate($value, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2)
-                     - ReportUtils::translate(0, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2));
+                return abs(Math::translate($value, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2)
+                     - Math::translate(0, $r['xmin'], $r['xmax'], $v['xmin'], $v['xmax'], 2));
             }
             if ($coordName === 'h' || $coordName === 'dy') {
-                return abs(ReportUtils::translate($value, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2)
-                     - ReportUtils::translate(0, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2));
+                return abs(Math::translate($value, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2)
+                     - Math::translate(0, $r['ymin'], $r['ymax'], $v['ymin'], $v['ymax'], 2));
             }
 
         }

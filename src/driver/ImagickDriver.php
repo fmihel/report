@@ -3,12 +3,14 @@ namespace fmihel\report\driver;
 
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
-use fmihel\report\ReportUtils;
+use fmihel\report\utils\Img;
+use fmihel\report\utils\Math;
+use fmihel\report\utils\Str;
 
 require_once __DIR__ . '/../Report.php';
 require_once __DIR__ . '/ReportDriver.php';
 require_once __DIR__ . '/../ReportFonts.php';
-require_once __DIR__ . '/../ReportUtils.php';
+// require_once __DIR__ . '/../ReportUtils.php';
 
 class ImagickDriver extends ReportDriver
 {
@@ -259,18 +261,18 @@ class ImagickDriver extends ReportDriver
     public function image($x, $y, $w, string $filename, array $param = [])
     {
 
-        $tmp = __DIR__ . '/tmp_' . ReportUtils::randomString(5) . '.jpg';
+        $tmp = __DIR__ . '/tmp_' . Str::random(5) . '.jpg';
 
         $data = @file_get_contents($filename);
         @file_put_contents($tmp, $data);
-        $size = ReportUtils::imgSize($data);
+        $size = Img::sizeFromImgStream($data);
 
         $img = new \Imagick();
         $img->readImage($tmp);
 
         $scale  = $size[1] / $size[0];
-        $width  = $this->delta(ReportUtils::translate($size[0], 0, $size[0], 0, $w));
-        $height = $this->delta(ReportUtils::translate($size[1], 0, $size[1], 0, $w * $scale));
+        $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $w));
+        $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
 
         $draw = $this->getCurrentDraw();
         $draw->composite(\Imagick::COMPOSITE_DEFAULT, $this->x($x), $this->y($y), $width, $height, $img);

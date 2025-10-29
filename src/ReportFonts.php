@@ -1,10 +1,8 @@
 <?php
 namespace fmihel\report;
 
-use fmihel\report\map\IReportMap;
-use fmihel\report\map\RobotoMap;
-
-require_once __DIR__ . '/maps/RobotoMap.php';
+use fmihel\report\maps\IReportMap;
+use fmihel\report\maps\RobotoMap;
 
 class ReportFonts
 {

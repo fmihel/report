@@ -1,5 +1,5 @@
 <?php
-namespace fmihel\report\map;
+namespace fmihel\report\maps;
 
 interface IReportMap
 {

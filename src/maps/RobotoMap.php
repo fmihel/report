@@ -1,7 +1,5 @@
 <?php
-namespace fmihel\report\map;
-
-require_once __DIR__ . '/IReportMap.php';
+namespace fmihel\report\maps;
 
 const ROBOTO_MAP = [
     'common' => 8.5,

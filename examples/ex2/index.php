@@ -3,17 +3,18 @@
 
 // ini_set("error_log", "/var/tmp/php-error.log");
 // ini_set('display_errors', 0);
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../autoload.php';
 
 use fmihel\console;
 use fmihel\report\driver\PdfDriver;
 use fmihel\report\Report;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-require_once __DIR__ . '/../../src/Report.php';
-require_once __DIR__ . '/../../src/driver/ReportDriver.php';
-require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
-require_once __DIR__ . '/../../src/driver/PdfDriver.php';
+// require_once __DIR__ . '/../../src/maps/ReportMap.php';
+// require_once __DIR__ . '/../../src/Report.php';
+// require_once __DIR__ . '/../../src/driver/ReportDriver.php';
+// require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
+// require_once __DIR__ . '/../../src/driver/PdfDriver.php';
 
 $MEDIA = __DIR__ . '/../media';
 

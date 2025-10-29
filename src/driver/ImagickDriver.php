@@ -14,6 +14,7 @@ require_once __DIR__ . '/../ReportFonts.php';
 
 class ImagickDriver extends ReportDriver
 {
+
     private $default = [
         Report::PORTRAIT  => [
             'realArea'    => [

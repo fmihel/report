@@ -11,11 +11,7 @@ use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-
-require_once __DIR__ . '/../../src/Report.php';
-require_once __DIR__ . '/../../src/driver/ReportDriver.php';
-require_once __DIR__ . '/../../src/driver/ImagickDriver.php';
-require_once __DIR__ . '/../../src/driver/PdfDriver.php';
+require_once __DIR__ . '/../autoload.php';
 
 const FONT_PATH = __DIR__ . '/../fonts';
 

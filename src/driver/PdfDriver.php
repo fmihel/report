@@ -1,10 +1,6 @@
 <?php
 namespace fmihel\report\driver;
 
-require_once __DIR__ . '/../Report.php';
-require_once __DIR__ . '/../ReportFonts.php';
-// require_once __DIR__ . '/../ReportUtils.php';
-
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 use fmihel\report\utils\Color;

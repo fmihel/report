@@ -123,6 +123,10 @@ class ReportDriver
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
+    public function pdf(string $filename, array $param = [])
+    {
+        throw new \Exception('не реализован метод ' . __METHOD__);
+    }
 
     public function setRealArea(array $realArea)
     {

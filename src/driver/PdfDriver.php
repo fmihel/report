@@ -6,7 +6,7 @@ use fmihel\report\ReportFonts;
 use fmihel\report\utils\Color;
 use fmihel\report\utils\Img;
 use fmihel\report\utils\Math;
-use TCPDF;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 // use TCPDF_FONTS;
 
@@ -53,7 +53,8 @@ class PdfDriver extends ReportDriver
 
     public function __construct()
     {
-        $this->pdf = new TCPDF("P", "mm", "A4", true, 'utf8', false);
+        // $this->pdf = new TCPDF("P", "mm", "A4", true, 'utf8', false);
+        $this->pdf = new Fpdi("P", "mm", "A4", true, 'utf8', false);
         $this->pdf->SetAutoPageBreak(false);
         $this->pdf->setPrintHeader(false);
         $this->pdf->setPrintFooter(false);
@@ -368,6 +369,20 @@ class PdfDriver extends ReportDriver
             $pdf->line($r['xmax'] - 1, $r['ymin'], $r['xmax'] - 1, $r['ymax'] - 1);
         }
 
+    }
+
+    public function pdf(string $filename, array $param = [])
+    {
+        $count = $this->pdf->setSourceFile($filename);
+        for ($i = 1; $i <= $count; $i++) {
+            $tplidx = $this->pdf->importPage($i); // Import the page
+            $info   = $this->pdf->getTemplateSize($tplidx);
+            // $orientation = ($size['w'] > $size['h']) ? 'L' : 'P';
+            $this->pdf->AddPage($info['orientation']);
+                                              // Add a new page to your TCPDF document
+                                              // $this->newPage();
+            $this->pdf->useTemplate($tplidx); // Use the imported page as a template
+        }
     }
 
     public function out(string $outTo = 'echo')

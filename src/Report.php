@@ -17,6 +17,7 @@ class Report
     const RE_CROSS        = 'cross';
     const RE_IMAGE        = 'image';
     const RE_MARKUP       = 'markup';
+    const RE_PDF          = 'pdf';
 
     public $pages         = [];
     private $_currentPage = -1;
@@ -53,6 +54,7 @@ class Report
             ],
             self::RE_CROSS        => [],
             self::RE_MARKUP       => [],
+            self::RE_PDF          => [],
         ],
     ];
 
@@ -90,6 +92,8 @@ class Report
                         $driver->markup(array_merge($default['objects'][self::RE_MARKUP], $data['param']));
                     } elseif ($name === self::RE_IMAGE) {
                         $driver->image($data['x'], $data['y'], $data['w'], $data['h'], $data['filename'], array_merge($default['objects'][self::RE_IMAGE], $data['param']));
+                    } elseif ($name === self::RE_PDF) {
+                        $driver->pdf($data['filename'], array_merge($default['objects'][self::RE_PDF], $data['param']));
                     }
                 }
             }
@@ -148,6 +152,11 @@ class Report
     public function markup($param = [])
     {
         $this->addObject(['name' => self::RE_MARKUP, 'data' => ['param' => $param]]);
+    }
+
+    public function pdf(string $filename, array $param = [])
+    {
+        $this->addObject(['name' => self::RE_PDF, 'data' => ['filename' => $filename, 'param' => $param]]);
     }
 
 }

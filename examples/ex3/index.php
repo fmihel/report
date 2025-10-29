@@ -1,8 +1,6 @@
 <?php
-// http://work/fmihel/report/report/examples/ex2/?jpg
+// http://work/fmihel/report/report/examples/ex3/
 
-// ini_set("error_log", "/var/tmp/php-error.log");
-// ini_set('display_errors', 0);
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../autoload.php';
 
@@ -26,12 +24,9 @@ try {
     $report = new Report();
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
-
-    $w = 100;
-    $h = 1000;
-    $report->image(50, 200, $w, $h, $MEDIA . '/img3.png', ['scale' => 'inscribe']);
-    $report->box(50, 200, $w, $h, ['color' => '#ff0000', 'width' => 3]);
     $report->markup();
+    // $report->pdf($MEDIA . '/doc1.pdf');
+    $report->pdf($MEDIA . '/doc2.pdf');
 
     $report->out($driver, 0, 'echo', $filename);
 

@@ -1,14 +1,15 @@
 <?php
 namespace fmihel\report\driver;
 
+use fmihel\console;
+use fmihel\pdf\drivers\GSDriver;
+use fmihel\pdf\PDF;
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 use fmihel\report\utils\Color;
 use fmihel\report\utils\Img;
 use fmihel\report\utils\Math;
 use setasign\Fpdi\Tcpdf\Fpdi;
-
-// use TCPDF_FONTS;
 
 class PdfDriver extends ReportDriver
 {
@@ -71,8 +72,9 @@ class PdfDriver extends ReportDriver
     }
     public function newPage(array $param = [])
     {
+
         $orientation = isset($param['orientation']) ? $param['orientation'] : Report::PORTRAIT;
-        $param       = array_merge_recursive(
+        $param       = array_merge(
             $this->default[$orientation],
             $param
         );
@@ -86,7 +88,7 @@ class PdfDriver extends ReportDriver
     }
     private function getCurrentParam(): array
     {
-        return $this->params[$this->currentPage];
+        return empty($this->params) ? $this->default[Report::PORTRAIT] : $this->params[$this->currentPage];
     }
 
     public function line($x1, $y1, $x2, $y2, $param = [])
@@ -96,6 +98,8 @@ class PdfDriver extends ReportDriver
             $pdf->SetLineWidth($this->metrik('width', $param['width']));
             $pdf->SetDrawColorArray(Color::hexToRgb($param['color']));
             $pdf->Line($this->x($x1), $this->y($y1), $this->x($x2), $this->y($y2));
+
+            $this->isPageEmpty = false;
         }
 
     }
@@ -118,7 +122,7 @@ class PdfDriver extends ReportDriver
         if ($out) {
             $this->pdf->Rect($this->x($x), $this->y($y), $this->delta($dx), $this->delta($dy), $out, [], Color::hexToRgbw($param['bg']));
         }
-
+        $this->isPageEmpty = false;
     }
 
     public function text($x, $y, $text, $param = [])
@@ -176,6 +180,7 @@ class PdfDriver extends ReportDriver
         // $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
         $this->pdf->Text($this->x($x) + $offX, $this->y($y) + $offY, $text);
+        $this->isPageEmpty = false;
 
     }
     public function textInRect($x, $y, $w, $h, string $text, array $param = [])
@@ -199,6 +204,7 @@ class PdfDriver extends ReportDriver
             $this->text($x + $offX, $pos, trim($string), $param);
             $pos += $prepare['rowHeight'];
         }
+        $this->isPageEmpty = false;
     }
     protected function textSize($text, $alias, $fontSize)
     {
@@ -303,7 +309,7 @@ class PdfDriver extends ReportDriver
         }
 
         $this->pdf->Image($filename, $left, $top, $width, $height);
-
+        $this->isPageEmpty = false;
     }
 
     public function cross($x, $y, $param = [])
@@ -317,6 +323,7 @@ class PdfDriver extends ReportDriver
 
         $pdf->Line($this->x($x), $this->y($y) - $d, $this->x($x), $this->y($y) + $d);
         $pdf->Line($this->x($x) - $d, $this->y($y), $this->x($x) + $d, $this->y($y));
+        $this->isPageEmpty = false;
 
     }
     public function markup($param = [])
@@ -371,17 +378,54 @@ class PdfDriver extends ReportDriver
 
     }
 
-    public function pdf(string $filename, array $param = [])
+    private function _add_pdf_use_fpdi($filename, array $param = []): bool
     {
-        $count = $this->pdf->setSourceFile($filename);
-        for ($i = 1; $i <= $count; $i++) {
-            $tplidx = $this->pdf->importPage($i); // Import the page
-            $info   = $this->pdf->getTemplateSize($tplidx);
-            // $orientation = ($size['w'] > $size['h']) ? 'L' : 'P';
-            $this->pdf->AddPage($info['orientation']);
-                                              // Add a new page to your TCPDF document
-                                              // $this->newPage();
-            $this->pdf->useTemplate($tplidx); // Use the imported page as a template
+        try {
+            $count = $this->pdf->setSourceFile($filename);
+            for ($i = 1; $i <= $count; $i++) {
+                $tplidx      = $this->pdf->importPage($i); // Import the page
+                $info        = $this->pdf->getTemplateSize($tplidx);
+                $orientation = substr(strtolower($info['orientation']), 0, 1);
+
+                $this->newPage(['orientation' => ($orientation === 'l' ? Report::LANDSCAPE : Report::PORTRAIT)]);
+
+                $this->pdf->useTemplate($tplidx); // Use the imported page as a template
+            }
+            return true;
+        } catch (\Exception $e) {
+        }
+        return false;
+
+    }
+    private function _add_pdf_use_pdf($filename, array $param = []): bool
+    {
+        try {
+            $driver = new GSDriver();
+            $pdf    = new PDF($driver);
+            // $count  = $pdf->countPage($filename);
+            $list = $pdf->convert($filename, __DIR__, 'jpg', '$name_$i');
+            foreach ($list as $file) {
+                $this->pdf->AddPage('P');
+                $this->image(5, 5, 100, 100, $file, ['scale' => 'h']);
+                unlink($file);
+            }
+            return true;
+        } catch (\Exception $e) {
+            console::log($e);
+        }
+        return false;
+    }
+    public function addPdf(string $filename, array $param = [])
+    {
+        try {
+            if (! $this->_add_pdf_use_fpdi($filename, $param)) {
+                if (! $this->_add_pdf_use_pdf($filename, $param)) {
+                    throw new \Exception('не удалось добавить pdf ' . $filename);
+                }
+            }
+
+        } catch (\Exception $e) {
+            console::error($e);
         }
     }
 
@@ -392,7 +436,6 @@ class PdfDriver extends ReportDriver
         } else {
             $this->pdf->Output($outTo, 'F');
         }
-
     }
 
 // private function toColor256(array $rgb)

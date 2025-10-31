@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c13808f79c8b1b47258e599b40f1a8d2",
+    "content-hash": "01577887cd3b70a03427927b5a865a00",
     "packages": [
         {
             "name": "fmihel/console-log",
-            "version": "v1.8.0",
+            "version": "v1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fmihel/console-log.git",
-                "reference": "e47215229a20663a388362414141e2d7cca687bd"
+                "reference": "80ffcf080f4ab0f012673c382a87ffcfce7d0a37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fmihel/console-log/zipball/e47215229a20663a388362414141e2d7cca687bd",
-                "reference": "e47215229a20663a388362414141e2d7cca687bd",
+                "url": "https://api.github.com/repos/fmihel/console-log/zipball/80ffcf080f4ab0f012673c382a87ffcfce7d0a37",
+                "reference": "80ffcf080f4ab0f012673c382a87ffcfce7d0a37",
                 "shasum": ""
             },
             "require-dev": {
@@ -42,9 +42,49 @@
             "description": "error,log,console,php,javascript,js,error_log,console.log,console.info",
             "support": {
                 "issues": "https://github.com/fmihel/console-log/issues",
-                "source": "https://github.com/fmihel/console-log/tree/v1.8.0"
+                "source": "https://github.com/fmihel/console-log/tree/v1.8.1"
             },
-            "time": "2024-10-24T13:10:45+00:00"
+            "time": "2025-09-23T06:12:29+00:00"
+        },
+        {
+            "name": "fmihel/pdf",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fmihel/pdf.git",
+                "reference": "6cf2111294d9bb2e1caa67d678657e868c4dba00"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fmihel/pdf/zipball/6cf2111294d9bb2e1caa67d678657e868c4dba00",
+                "reference": "6cf2111294d9bb2e1caa67d678657e868c4dba00",
+                "shasum": ""
+            },
+            "require-dev": {
+                "fmihel/console-log": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "fmihel\\pdf\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "fmihel",
+                    "email": "fmihel76@gmail.com"
+                }
+            ],
+            "description": "pdf,convert,jpg,ghostscript,Imagick",
+            "support": {
+                "issues": "https://github.com/fmihel/pdf/issues",
+                "source": "https://github.com/fmihel/pdf/tree/v0.2.0"
+            },
+            "time": "2025-10-31T12:01:12+00:00"
         },
         {
             "name": "setasign/fpdi",

@@ -22,7 +22,6 @@ class ReportDriver
 
     public function newPage()
     {
-
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
     public function out(string $outTo = 'echo')
@@ -123,7 +122,7 @@ class ReportDriver
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-    public function pdf(string $filename, array $param = [])
+    public function addPdf(string $filename, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }

@@ -25,10 +25,13 @@ try {
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
     $report->markup();
-    // $report->pdf($MEDIA . '/doc1.pdf');
-    $report->pdf($MEDIA . '/doc2.pdf');
 
-    $report->out($driver, 0, 'echo', $filename);
+    $report->addPdf($MEDIA . '/doc3.pdf');
+
+    $report->newPage(['orientation' => Report::PORTRAIT]);
+    $report->line(10, 10, 100, 100);
+
+    $report->out($driver, 'all', 'echo', $filename);
 
 } catch (\Exception $e) {
     console::error($e);

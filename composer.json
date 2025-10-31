@@ -27,6 +27,7 @@
     "require": {
         "fmihel/console-log": "^1.8",
         "tecnickcom/tcpdf": "^6.10",
-        "setasign/fpdi": "^2.6"
+        "setasign/fpdi": "^2.6",
+        "fmihel/pdf": "^0.2.0"
     }
 }

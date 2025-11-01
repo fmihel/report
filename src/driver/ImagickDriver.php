@@ -1,6 +1,8 @@
 <?php
 namespace fmihel\report\driver;
 
+use fmihel\pdf\drivers\GSDriver;
+use fmihel\pdf\PDF;
 use fmihel\report\Report;
 use fmihel\report\ReportFonts;
 use fmihel\report\utils\Img;
@@ -308,6 +310,22 @@ class ImagickDriver extends ReportDriver
         }
 
     }
+    public function addPdf(string $filename, $pageNum = 0, array $param = [])
+    {
+        $pdf   = new PDF(new GSDriver());
+        $files = $pdf->convert($filename, __DIR__, 'jpg', '$name_$i');
+
+        $file = $files[$pageNum - 1];
+        $area = $this->params[count($this->params) - 1]['virtualArea'];
+        $gap  = $area['xmax'] * 0.01;
+        $this->image($gap, $gap, $area['xmax'] - $gap * 2, 0, $file, ['scale' => 'h']);
+
+        foreach ($files as $file) {
+            unlink($file);
+        }
+
+    }
+
     public function markup($param = [])
     {
         $param = array_merge([

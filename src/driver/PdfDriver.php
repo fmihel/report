@@ -405,18 +405,15 @@ class PdfDriver extends ReportDriver
         try {
             $driver = new GSDriver();
             $pdf    = new PDF($driver);
-            $area   = $this->params[$this->currentPage]['virtualArea'];
             // $count  = $pdf->countPage($filename);
-            $list = $pdf->convert($filename, __DIR__, 'jpg', '$name_$i', ['dpi' => 200]);
-            foreach ($list as $i => $file) {
-                // $this->pdf->AddPage('P');
+            $files = $pdf->convert($filename, __DIR__, 'jpg', '$name_$i', ['dpi' => 200]);
 
-                if ($i === ($pageNum - 1)) {
-                    $gap = $area['xmax'] * 0.01;
+            $file = $files[$pageNum - 1];
+            $area = $this->params[$this->currentPage]['virtualArea'];
+            $gap  = $area['xmax'] * 0.01;
+            $this->image($gap, $gap, $area['xmax'] - $gap * 2, 0, $file, ['scale' => 'h']);
 
-                    $this->image($gap, $gap, $area['xmax'] - $gap * 2, 0, $file, ['scale' => 'h']);
-                }
-
+            foreach ($files as $file) {
                 unlink($file);
             }
             return true;

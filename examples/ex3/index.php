@@ -13,7 +13,7 @@ $MEDIA = __DIR__ . '/../media';
 
 try {
     PdfDriver::$PATH_TCPDF_FONTS = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts';
-    if (true) {
+    if (false) {
         $driver   = new PdfDriver();
         $filename = __DIR__ . '/out_report.pdf';
     } else {
@@ -23,17 +23,17 @@ try {
 
     $report = new Report();
 
+    // $report->newPage(['orientation' => Report::PORTRAIT]);
+    // $report->markup();
+    // $report->line(10, 10, 100, 100);
+
+    $report->addPdf($MEDIA . '/doc2.pdf');
+
     $report->newPage(['orientation' => Report::PORTRAIT]);
     $report->markup();
     $report->line(10, 10, 100, 100);
 
-    $report->addPdf($MEDIA . '/doc4.pdf');
-
-    $report->newPage(['orientation' => Report::PORTRAIT]);
-    $report->markup();
-    $report->line(10, 10, 100, 100);
-
-    $report->out($driver, 'all', 'echo', $filename);
+    $report->out($driver, 0, 'echo', $filename);
 
 } catch (\Exception $e) {
     console::error($e);

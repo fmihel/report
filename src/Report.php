@@ -1,6 +1,9 @@
 <?php
 namespace fmihel\report;
 
+use fmihel\pdf\drivers\GSDriver;
+use fmihel\pdf\PDF;
+
 require_once __DIR__ . '/ReportFonts.php';
 
 class Report
@@ -93,7 +96,7 @@ class Report
                     } elseif ($name === self::RE_IMAGE) {
                         $driver->image($data['x'], $data['y'], $data['w'], $data['h'], $data['filename'], array_merge($default['objects'][self::RE_IMAGE], $data['param']));
                     } elseif ($name === self::RE_ADDPDF) {
-                        $driver->addPdf($data['filename'], array_merge($default['objects'][self::RE_ADDPDF], $data['param']));
+                        $driver->addPdf($data['filename'], $data['pageNum'], array_merge($default['objects'][self::RE_ADDPDF], $data['param']));
                     }
                 }
             }
@@ -156,7 +159,15 @@ class Report
 
     public function addPdf(string $filename, array $param = [])
     {
-        $this->addObject(['name' => self::RE_ADDPDF, 'data' => ['filename' => $filename, 'param' => $param]]);
+        $pdf  = new PDF(new GSDriver());
+        $info = $pdf->info($filename);
+        foreach ($info as $i => $page) {
+            $this->newPage([
+                'orientation' => $page['orientation'] === GSDriver::PORTRAIT ? self::PORTRAIT : self::LANDSCAPE,
+            ]);
+
+            $this->addObject(['name' => self::RE_ADDPDF, 'data' => ['filename' => $filename, 'pageNum' => $i + 1, 'param' => array_merge($param, ['pdfinfo' => $page])]]);
+        }
     }
 
 }

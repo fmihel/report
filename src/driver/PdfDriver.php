@@ -378,35 +378,45 @@ class PdfDriver extends ReportDriver
 
     }
 
-    private function _add_pdf_use_fpdi($filename, array $param = []): bool
+    private function _add_pdf_use_fpdi($filename, $pageNum, array $param = []): bool
     {
         try {
             $count = $this->pdf->setSourceFile($filename);
-            for ($i = 1; $i <= $count; $i++) {
-                $tplidx      = $this->pdf->importPage($i); // Import the page
-                $info        = $this->pdf->getTemplateSize($tplidx);
-                $orientation = substr(strtolower($info['orientation']), 0, 1);
+            // for ($i = 1; $i <= $count; $i++) {
+            // $tplidx      = $this->pdf->importPage($i); // Import the page
 
-                $this->newPage(['orientation' => ($orientation === 'l' ? Report::LANDSCAPE : Report::PORTRAIT)]);
+            $tplidx = $this->pdf->importPage($pageNum); // Import the page
 
-                $this->pdf->useTemplate($tplidx); // Use the imported page as a template
-            }
+            // $info   = $this->pdf->getTemplateSize($tplidx);
+            // $orientation = substr(strtolower($info['orientation']), 0, 1);
+            // $this->newPage(['orientation' => ($orientation === 'l' ? Report::LANDSCAPE : Report::PORTRAIT)]);
+
+            $this->pdf->useTemplate($tplidx); // Use the imported page as a template
+
+            // }
             return true;
         } catch (\Exception $e) {
         }
         return false;
 
     }
-    private function _add_pdf_use_pdf($filename, array $param = []): bool
+    private function _add_pdf_use_pdf($filename, $pageNum, array $param = []): bool
     {
         try {
             $driver = new GSDriver();
             $pdf    = new PDF($driver);
+            $area   = $this->params[$this->currentPage]['virtualArea'];
             // $count  = $pdf->countPage($filename);
-            $list = $pdf->convert($filename, __DIR__, 'jpg', '$name_$i');
-            foreach ($list as $file) {
-                $this->pdf->AddPage('P');
-                $this->image(5, 5, 100, 100, $file, ['scale' => 'h']);
+            $list = $pdf->convert($filename, __DIR__, 'jpg', '$name_$i', ['dpi' => 200]);
+            foreach ($list as $i => $file) {
+                // $this->pdf->AddPage('P');
+
+                if ($i === ($pageNum - 1)) {
+                    $gap = $area['xmax'] * 0.01;
+
+                    $this->image($gap, $gap, $area['xmax'] - $gap * 2, 0, $file, ['scale' => 'h']);
+                }
+
                 unlink($file);
             }
             return true;
@@ -415,11 +425,11 @@ class PdfDriver extends ReportDriver
         }
         return false;
     }
-    public function addPdf(string $filename, array $param = [])
+    public function addPdf(string $filename, $pageNum = 0, array $param = [])
     {
         try {
-            if (! $this->_add_pdf_use_fpdi($filename, $param)) {
-                if (! $this->_add_pdf_use_pdf($filename, $param)) {
+            if (! $this->_add_pdf_use_fpdi($filename, $pageNum, $param)) {
+                if (! $this->_add_pdf_use_pdf($filename, $pageNum, $param)) {
                     throw new \Exception('не удалось добавить pdf ' . $filename);
                 }
             }

@@ -122,7 +122,7 @@ class ReportDriver
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }
-    public function addPdf(string $filename, array $param = [])
+    public function addPdf(string $filename, $pageNum = 0, array $param = [])
     {
         throw new \Exception('не реализован метод ' . __METHOD__);
     }

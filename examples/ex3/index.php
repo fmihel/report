@@ -25,10 +25,12 @@ try {
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
     $report->markup();
+    $report->line(10, 10, 100, 100);
 
-    $report->addPdf($MEDIA . '/doc3.pdf');
+    $report->addPdf($MEDIA . '/doc4.pdf');
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
+    $report->markup();
     $report->line(10, 10, 100, 100);
 
     $report->out($driver, 'all', 'echo', $filename);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "01577887cd3b70a03427927b5a865a00",
+    "content-hash": "2d29b845e08c3fa18ba6cf5221e3adb0",
     "packages": [
         {
             "name": "fmihel/console-log",
@@ -48,16 +48,16 @@
         },
         {
             "name": "fmihel/pdf",
-            "version": "v0.2.0",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fmihel/pdf.git",
-                "reference": "6cf2111294d9bb2e1caa67d678657e868c4dba00"
+                "reference": "b7b8e4a4163008ba9e4664df7833f64b06f6031a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fmihel/pdf/zipball/6cf2111294d9bb2e1caa67d678657e868c4dba00",
-                "reference": "6cf2111294d9bb2e1caa67d678657e868c4dba00",
+                "url": "https://api.github.com/repos/fmihel/pdf/zipball/b7b8e4a4163008ba9e4664df7833f64b06f6031a",
+                "reference": "b7b8e4a4163008ba9e4664df7833f64b06f6031a",
                 "shasum": ""
             },
             "require-dev": {
@@ -82,9 +82,9 @@
             "description": "pdf,convert,jpg,ghostscript,Imagick",
             "support": {
                 "issues": "https://github.com/fmihel/pdf/issues",
-                "source": "https://github.com/fmihel/pdf/tree/v0.2.0"
+                "source": "https://github.com/fmihel/pdf/tree/v0.3.0"
             },
-            "time": "2025-10-31T12:01:12+00:00"
+            "time": "2025-11-01T08:53:06+00:00"
         },
         {
             "name": "setasign/fpdi",

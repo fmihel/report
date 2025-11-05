@@ -27,7 +27,8 @@ try {
     // $report->markup();
     // $report->line(10, 10, 100, 100);
 
-    $report->addPdf($MEDIA . '/doc2.pdf');
+    // $report->addPdf($MEDIA . '/doc2.pdf');
+    $report->image(10, 10, 1000, 1000, $MEDIA . '/img3.png', ['scale' => 'inscribe']);
 
     $report->newPage(['orientation' => Report::PORTRAIT]);
     $report->markup();

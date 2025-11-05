@@ -38,4 +38,9 @@ class Img
         return getimagesize($uri);
     }
 
+    public static function portrait(string $filename): bool
+    {
+        $size = self::size($filename);
+        return $size[0] < $size[1];
+    }
 }

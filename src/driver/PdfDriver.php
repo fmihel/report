@@ -98,8 +98,6 @@ class PdfDriver extends ReportDriver
             $pdf->SetLineWidth($this->metrik('width', $param['width']));
             $pdf->SetDrawColorArray(Color::hexToRgb($param['color']));
             $pdf->Line($this->x($x1), $this->y($y1), $this->x($x2), $this->y($y2));
-
-            $this->isPageEmpty = false;
         }
 
     }
@@ -122,7 +120,6 @@ class PdfDriver extends ReportDriver
         if ($out) {
             $this->pdf->Rect($this->x($x), $this->y($y), $this->delta($dx), $this->delta($dy), $out, [], Color::hexToRgbw($param['bg']));
         }
-        $this->isPageEmpty = false;
     }
 
     public function text($x, $y, $text, $param = [])
@@ -180,7 +177,6 @@ class PdfDriver extends ReportDriver
         // $size = $this->textSize($text, $param['fontName'], $param['fontSize']);
 
         $this->pdf->Text($this->x($x) + $offX, $this->y($y) + $offY, $text);
-        $this->isPageEmpty = false;
 
     }
     public function textInRect($x, $y, $w, $h, string $text, array $param = [])
@@ -204,7 +200,6 @@ class PdfDriver extends ReportDriver
             $this->text($x + $offX, $pos, trim($string), $param);
             $pos += $prepare['rowHeight'];
         }
-        $this->isPageEmpty = false;
     }
     protected function textSize($text, $alias, $fontSize)
     {
@@ -309,7 +304,6 @@ class PdfDriver extends ReportDriver
         }
 
         $this->pdf->Image($filename, $left, $top, $width, $height);
-        $this->isPageEmpty = false;
     }
 
     public function cross($x, $y, $param = [])
@@ -323,7 +317,6 @@ class PdfDriver extends ReportDriver
 
         $pdf->Line($this->x($x), $this->y($y) - $d, $this->x($x), $this->y($y) + $d);
         $pdf->Line($this->x($x) - $d, $this->y($y), $this->x($x) + $d, $this->y($y));
-        $this->isPageEmpty = false;
 
     }
     public function markup($param = [])

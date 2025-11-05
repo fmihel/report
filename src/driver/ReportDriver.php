@@ -63,7 +63,7 @@ class ReportDriver
         }
 
         $strings   = [];
-        $rw        = $this->delta($w);
+        $rw        = $this->deltaX($w);
         $lastw     = 0;
         $allHeight = 0;
         $texts     = mb_str_split($text);
@@ -135,26 +135,48 @@ class ReportDriver
     {
         $this->virtualArea = array_merge($this->virtualArea, $virtualArea);
     }
-
+    protected function percentX($virtualX)
+    {
+        if (strpos("$virtualX", '%') !== false) {
+            $percent = floatval(str_replace(['%', ','], ['', '.'], $virtualX));
+            return abs($this->virtualArea['xmax'] - $this->virtualArea['xmin']) * $percent / 100;
+        }
+        return $virtualX;
+    }
+    protected function percentY($virtualY)
+    {
+        if (strpos("$virtualY", '%') !== false) {
+            $percent = floatval(str_replace(['%', ','], ['', '.'], $virtualY));
+            return abs($this->virtualArea['ymax'] - $this->virtualArea['ymin']) * $percent / 100;
+        }
+        return $virtualY;
+    }
     public function x($virtualX)
     {
-        $r = $this->realArea;
-        $v = $this->virtualArea;
+        $r        = $this->realArea;
+        $v        = $this->virtualArea;
+        $virtualX = $this->percentX($virtualX);
         return Math::translate($virtualX, $v['xmin'], $v['xmax'], $r['xmin'], $r['xmax'], 2);
     }
     public function y($virtualY)
     {
-        $r = $this->realArea;
-        $v = $this->virtualArea;
+        $r        = $this->realArea;
+        $v        = $this->virtualArea;
+        $virtualY = $this->percentY($virtualY);
         return Math::translate($virtualY, $v['ymin'], $v['ymax'], $r['ymin'], $r['ymax'], 2);
     }
 
-    public function delta($virtualDelta)
+    public function deltaX($virtualDeltaX)
     {
-        $r = $this->realArea;
-        $v = $this->virtualArea;
-        return abs($this->x($virtualDelta) - $this->x(0));
+        return abs($this->x($virtualDeltaX) - $this->x(0));
     }
+
+    public function deltaY($virtualDeltaY)
+    {
+
+        return abs($this->y($virtualDeltaY) - $this->y(0));
+    }
+
     public function transform(string $coordName, $value, string $convertTo)
     {
         $r = $this->realArea;

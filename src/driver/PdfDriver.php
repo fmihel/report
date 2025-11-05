@@ -118,7 +118,7 @@ class PdfDriver extends ReportDriver
         }
 
         if ($out) {
-            $this->pdf->Rect($this->x($x), $this->y($y), $this->delta($dx), $this->delta($dy), $out, [], Color::hexToRgbw($param['bg']));
+            $this->pdf->Rect($this->x($x), $this->y($y), $this->deltaX($dx), $this->deltaY($dy), $out, [], Color::hexToRgbw($param['bg']));
         }
     }
 
@@ -218,7 +218,7 @@ class PdfDriver extends ReportDriver
     protected function textCrop($text, $width, $alias, $fontSize): string
     {
         $metrik = $this->textSize($text, $alias, $fontSize);
-        $width  = $this->delta($width);
+        $width  = $this->deltaX($width);
         if ($metrik['w'] <= $width) {
             return $text;
         }
@@ -261,8 +261,11 @@ class PdfDriver extends ReportDriver
     }
     public function image($x, $y, $w, $h, string $filename, array $param = [])
     {
-        $left   = $this->x($x);
-        $top    = $this->y($y);
+        $left = $this->x($x);
+        $top  = $this->y($y);
+        $w    = $this->percentX($w);
+        $h    = $this->percentY($h);
+
         $width  = 0;
         $height = 0;
 
@@ -278,13 +281,13 @@ class PdfDriver extends ReportDriver
 
                 if ($param['scale'] === 'h') {
 
-                    $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $w));
-                    $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
+                    $width  = $this->deltaX(Math::translate($size[0], 0, $size[0], 0, $w));
+                    $height = $this->deltaY(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
 
                 } elseif ($param['scale'] === 'w') {
 
-                    $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $h / $scale));
-                    $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $h));
+                    $width  = $this->deltaX(Math::translate($size[0], 0, $size[0], 0, $h / $scale));
+                    $height = $this->deltaY(Math::translate($size[1], 0, $size[1], 0, $h));
 
                 } else { // inscribe
 
@@ -294,16 +297,21 @@ class PdfDriver extends ReportDriver
                         $width  = Math::translate($size[0], 0, $size[0], 0, $h / $scale);
                         $height = Math::translate($size[1], 0, $size[1], 0, $h);
                     }
-                    $width  = $this->delta($width);
-                    $height = $this->delta($height);
+                    $width  = $this->deltaX($width);
+                    $height = $this->deltaY($height);
                 }
             }
         } else {
-            $width  = $this->delta($w);
-            $height = $this->delta($h);
+            $width  = $this->deltaX($w);
+            $height = $this->deltaY($h);
         }
 
         $this->pdf->Image($filename, $left, $top, $width, $height);
+
+        if (isset($param['border']) && $param['border']) {
+            $this->pdf->SetDrawColorArray(Color::hexToRgb($param['border']));
+            $this->pdf->Rect($left, $top, $width, $height, 'D');
+        }
     }
 
     public function cross($x, $y, $param = [])

@@ -219,7 +219,7 @@ class ImagickDriver extends ReportDriver
     protected function textCrop($text, $width, $alias, $fontSize): string
     {
         $metrik = $this->textSize($text, $alias, $fontSize);
-        $width  = $this->delta($width);
+        $width  = $this->deltaX($width);
         if ($metrik['w'] <= $width) {
             return $text;
         }
@@ -263,8 +263,11 @@ class ImagickDriver extends ReportDriver
 
     public function image($x, $y, $w, $h, string $filename, array $param = [])
     {
-        $left   = $this->x($x);
-        $top    = $this->y($y);
+        $left = $this->x($x);
+        $top  = $this->y($y);
+        $w    = $this->percentX($w);
+        $h    = $this->percentY($h);
+
         $width  = 0;
         $height = 0;
 
@@ -280,11 +283,11 @@ class ImagickDriver extends ReportDriver
             $scale = $size[1] / $size[0];
 
             if ($param['scale'] === 'h') {
-                $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $w));
-                $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
+                $width  = $this->deltaX(Math::translate($size[0], 0, $size[0], 0, $w));
+                $height = $this->deltaY(Math::translate($size[1], 0, $size[1], 0, $w * $scale));
             } elseif ($param['scale'] === 'w') {
-                $width  = $this->delta(Math::translate($size[0], 0, $size[0], 0, $h / $scale));
-                $height = $this->delta(Math::translate($size[1], 0, $size[1], 0, $h));
+                $width  = $this->deltaX(Math::translate($size[0], 0, $size[0], 0, $h / $scale));
+                $height = $this->deltaY(Math::translate($size[1], 0, $size[1], 0, $h));
             } else { // inscribe
 
                 $width  = Math::translate($size[0], 0, $size[0], 0, $w);
@@ -293,17 +296,24 @@ class ImagickDriver extends ReportDriver
                     $width  = Math::translate($size[0], 0, $size[0], 0, $h / $scale);
                     $height = Math::translate($size[1], 0, $size[1], 0, $h);
                 }
-                $width  = $this->delta($width);
-                $height = $this->delta($height);
+                $width  = $this->deltaX($width);
+                $height = $this->deltaY($height);
             }
         } else {
-            $width  = $this->delta($w);
-            $height = $this->delta($h);
+            $width  = $this->deltaX($w);
+            $height = $this->deltaY($h);
 
         }
 
         $draw = $this->getCurrentDraw();
         $draw->composite(\Imagick::COMPOSITE_DEFAULT, $left, $top, $width, $height, $img);
+
+        if (isset($param['border']) && $param['border']) {
+
+            $draw->setStrokeColor($param['border']);
+            $draw->setFillColor('#00000000');
+            $draw->rectangle($left, $top, $left + $width, $top + $height);
+        }
 
         if (file_exists($tmp)) {
             unlink($tmp);

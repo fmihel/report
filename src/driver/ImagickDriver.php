@@ -196,6 +196,9 @@ class ImagickDriver extends ReportDriver
         foreach ($prepare['strings'] as $string) {
             $this->text($x + $offX, $pos, trim($string), $param);
             $pos += $prepare['rowHeight'];
+            if ($param['overflow'] === 'hidden' && ($pos + $prepare['rowHeight'] >= ($y + $h))) {
+                break;
+            }
         }
 
     }

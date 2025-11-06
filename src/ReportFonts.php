@@ -45,7 +45,7 @@ class ReportFonts
         $common = 8.5;
         $h      = 1;
         $w      = 0;
-        $len    = strlen($text);
+        $len    = mb_strlen($text);
 
         if (isset(self::$maps[$alias])) {
             $map = self::$maps[$alias];

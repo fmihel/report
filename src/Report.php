@@ -51,9 +51,10 @@ class Report
                 'fontSize'   => 12,
                 'fontName'   => 'roboto',
                 'alignHoriz' => 'left',
+                'overflow'   => 'visible', //hidden
             ],
             self::RE_IMAGE        => [
-                'scale' => 'none',
+                'scale' => 'none', //h,w,inscribe
             ],
             self::RE_CROSS        => [],
             self::RE_MARKUP       => [],

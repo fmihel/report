@@ -19,4 +19,25 @@ $report->text(200, 200, "Hello World",['color'=>'#00ff00']);
 $report->out(new ImagickDriver());
 
 ```
+---
+### class Report
+
+Render report and out to target device\
+ ```function out($driver, $outPage = 'all', string $target = 'echo', string $filename = '')```
+
+|name|type|notes|
+|---|---|---|
+|$driver|ReportDriver| output driver
+|$outPage|string \| int|all or number of page for output|
+|$target|string|'echo' \| 'file' output divice|
+|$filename|string|name of file for $target='file'|
+
+---
+Create new page of report \
+```function newPage(array $param = [])```
+
+|name|type|notes|
+|---|---|---|
+|$param|array|param for created page ex: ['orientation'=>Report::LANDSCAPE] |
+
 

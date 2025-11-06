@@ -199,6 +199,9 @@ class PdfDriver extends ReportDriver
         foreach ($prepare['strings'] as $string) {
             $this->text($x + $offX, $pos, trim($string), $param);
             $pos += $prepare['rowHeight'];
+            if ($param['overflow'] === 'hidden' && ($pos + $prepare['rowHeight'] >= ($y + $h))) {
+                break;
+            }
         }
     }
     protected function textSize($text, $alias, $fontSize)
@@ -445,11 +448,6 @@ class PdfDriver extends ReportDriver
             $this->pdf->Output($outTo, 'F');
         }
     }
-
-// private function toColor256(array $rgb)
-    // {
-    //     return [$rgb[0] * 256, $rgb[1] * 256, $rgb[2] * 256];
-    // }
 
     protected function metrik($name, $value)
     {

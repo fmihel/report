@@ -1,5 +1,5 @@
 <?php
-// http://work/fmihel/report/report/examples/02_image
+// http://work/fmihel/report/report/examples/03_image_inscribe
 
 // ini_set("error_log", "/var/tmp/php-error.log");
 // ini_set('display_errors', 0);
@@ -12,7 +12,7 @@ use fmihel\report\Report;
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/autoload.php';
 
-const AS_PDF = false;
+const AS_PDF = true;
 
 const FONT_PATH = __DIR__ . '/../fonts';
 const MEDIA     = __DIR__ . '/media';

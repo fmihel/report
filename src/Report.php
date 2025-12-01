@@ -8,9 +8,10 @@ require_once __DIR__ . '/ReportFonts.php';
 
 class Report
 {
-    const A4_RATIO  = 1.414;
-    const LANDSCAPE = 'landscape';
-    const PORTRAIT  = 'portrait';
+    const A4_RATIO    = 1.414;
+    const LANDSCAPE   = 'landscape';
+    const PORTRAIT    = 'portrait';
+    const ORIENTATION = 'orientation';
 
     const RE_PAGE         = 'page';
     const RE_LINE         = 'line';

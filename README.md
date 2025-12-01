@@ -23,34 +23,35 @@ $report->out(new ImagickDriver());
 # class Report
 
 ## Methods
-
-```php
-out( $driver, $outPage = 'all', string $target = 'echo', string $filename = '')
-```
 Render report and out to target device
+```php
+out( $driver, $outPage = 'all', string $target = 'echo', string $filename = '') 
+```
+
 
 |name|type|notes|
 |---|---|---|
 |$driver|ReportDriver| output driver
 |$outPage|string \| int|"all" or number of page for output|
-|$target|string|"echo" \| "file" output divice|
+|$target|string|"echo" \| "file" output device|
 |$filename|string|name of file for $target='file'|
 
 ---
+Create new page of report 
 ```php
 newPage(array $param = [])
 ```
-Create new page of report 
+
 
 |name|type|notes|
 |---|---|---|
 |$param|array|param for created page ex: [ Report::ORIENTATION => Report::LANDSCAPE ] |
 
 ---
+Draw line
 ```php
 line( $x1, $y1, $x2, $y2, array $param=[])
 ```
-Draw line
  
 |name|type|notes|
 |---|---|---|
@@ -61,10 +62,11 @@ Draw line
 |$param|array| ```width``` - fat of line 1,2, ... <br> ```color``` - color ex:'#00ff00'|
 
 ---
+Draw image
 ```php
 image( $x, $y, $width, $height, $filename, array $param=[])
 ```
-Draw image
+
  
 |name|type|notes|
 |---|---|---|
@@ -73,7 +75,7 @@ Draw image
 |$width|int \| string| width as int or percent|
 |$height|int \| string| height as int or percent|
 |$filename|string| path to local file|
-|$param|array| ```scale``` - "h" or "w" or "inscribe" -method scaling of image<br> ```border``` - color of border (default none) ex:'#00ff00'|
+|$param|array| ```scale``` - "h" or "w" or "inscribe" - scaling method of image<br> ```border``` - color of border (default none) ex:"#00ff00"|
 
 
 

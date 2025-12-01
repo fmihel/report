@@ -1,4 +1,4 @@
-# report 0.1
+# report 
 
 Обертка для генерации отчетов на страницах формата A4. 
 
@@ -21,48 +21,45 @@ $report->out(new ImagickDriver());
 ```
 ---
 # class Report
-
-## Methods
-Render report and out to target device
+## Методы
+Выводит сформированный отчет на устройство ( в файл или в косоль )
 ```php
 out( $driver, $outPage = 'all', string $target = 'echo', string $filename = '') 
 ```
 
-
 |name|type|notes|
 |---|---|---|
-|$driver|ReportDriver| output driver
-|$outPage|string \| int|"all" or number of page for output|
-|$target|string|"echo" \| "file" output device|
-|$filename|string|name of file for $target='file'|
+|$driver|ReportDriver| драйвер вывода см. class ReportDriver|
+|$outPage|string \| int|принимает значение либо "all" либо номер страницы к выводу|
+|$target|string|"echo" \| "file", указывает на какое устройство отправить отчет|
+|$filename|string|имя файла куда сохраниться отчет, если $target='file'|
 
 ---
-Create new page of report 
+Создает новую страницу
 ```php
 newPage(array $param = [])
 ```
 
-
 |name|type|notes|
 |---|---|---|
-|$param|array|param for created page ex: [ Report::ORIENTATION => Report::LANDSCAPE ] |
+|$param|array|```orientation``` => Report::LANDSCAPE \| Report::PORTRAIT  |
 
 ---
-Draw line
+Рисует линию
 ```php
 line( $x1, $y1, $x2, $y2, array $param=[])
 ```
  
 |name|type|notes|
 |---|---|---|
-|$x1|int \| string| x start coord as int or percent|
-|$y1|int \| string| y start coord as int or percent|
-|$x2|int \| string| x end coord as int or percent|
-|$y2|int \| string| y start coord as int or percent|
-|$param|array| ```width``` - fat of line 1,2, ... <br> ```color``` - color ex:'#00ff00'|
+|$x1|int \| string| начальная x координата в пикселях или в процентах|
+|$y1|int \| string| начальная y координата в пикселях или в процентах|
+|$x2|int \| string| конечная x координата в пикселях или в процентах|
+|$y2|int \| string| конечная y координата в пикселях или в процентах|
+|$param|array| ```width``` => fat of line 1,2, ... <br> ```color``` - color ex:'#00ff00'|
 
 ---
-Draw image
+Выводит в отчете готовое изображение
 ```php
 image( $x, $y, $width, $height, $filename, array $param=[])
 ```
@@ -70,12 +67,12 @@ image( $x, $y, $width, $height, $filename, array $param=[])
  
 |name|type|notes|
 |---|---|---|
-|$x|int \| string| left top coord as int or percent|
-|$y|int \| string| left top coord as int or percent|
-|$width|int \| string| width as int or percent|
-|$height|int \| string| height as int or percent|
-|$filename|string| path to local file|
-|$param|array| ```scale``` - "h" or "w" or "inscribe" - scaling method of image<br> ```border``` - color of border (default none) ex:"#00ff00"|
+|$x|int \| string| верхняя левая координата в пикс или процентах|
+|$y|int \| string| верхняя левая координата в пикс или процентах|
+|$width|int \| string| ширина в пикс или процентах|
+|$height|int \| string| высота в пикс или процентах|
+|$filename|string| путь к графическому файлу|
+|$param|array| ```scale``` - "h" or "w" or "inscribe" - методы масштабирования <br> ```border``` - цвет рамки (по умолчанию без рамки) ex:"#00ff00"|
 
 
 
